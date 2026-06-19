@@ -1,0 +1,136 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Store - Ali Kenjo</title>
+  <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,700;1,400;1,700&family=Space+Grotesk:wght@300;400;500&display=swap" rel="stylesheet"/>
+  <link rel="stylesheet" href="style.css">
+  <style>
+    .store-content {
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      text-align: center;
+      padding: 4rem 2rem;
+    }
+
+    .store-content h1 {
+      font-family: var(--font-display);
+      font-size: clamp(3rem, 8vw, 5rem);
+      margin-bottom: 1.5rem;
+    }
+
+    .store-content p {
+      font-size: 1.1rem;
+      color: var(--text-muted);
+      max-width: 500px;
+      margin-bottom: 2rem;
+      line-height: 1.6;
+    }
+
+    .back-btn {
+      display: inline-block;
+      margin-top: 2rem;
+      padding: 0.8rem 2rem;
+      background: var(--accent);
+      color: var(--text);
+      border: none;
+      border-radius: 4px;
+      font-family: var(--font-body);
+      font-size: 0.75rem;
+      font-weight: 500;
+      letter-spacing: 0.15em;
+      text-transform: uppercase;
+      text-decoration: none;
+      transition: all 0.2s;
+      cursor: pointer;
+    }
+
+    .back-btn:hover {
+      opacity: 0.8;
+      transform: translateY(-2px);
+    }
+
+    .offer-card {
+      width: min(100%, 560px);
+      background: rgba(255,255,255,0.95);
+      border: 1px solid rgba(0,0,0,0.08);
+      border-radius: 24px;
+      box-shadow: 0 24px 80px rgba(0,0,0,0.08);
+      padding: 2rem;
+      margin-top: 2rem;
+      text-align: left;
+    }
+
+    .offer-card h2 {
+      margin-bottom: 0.75rem;
+      font-family: var(--font-display);
+      font-size: 2rem;
+    }
+
+    .offer-card p {
+      color: var(--text-muted);
+      line-height: 1.75;
+      margin-bottom: 1.5rem;
+    }
+
+    .download-btn {
+      display: inline-block;
+      padding: 0.95rem 2rem;
+      background: var(--text);
+      color: var(--bg);
+      border-radius: 999px;
+      font-family: var(--font-body);
+      font-size: 0.8rem;
+      font-weight: 700;
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+      text-decoration: none;
+      transition: transform 0.2s, opacity 0.2s;
+    }
+
+    .download-btn:hover {
+      opacity: 0.9;
+      transform: translateY(-2px);
+    }
+
+    html.dark-mode .offer-card {
+      background: rgba(24,24,24,0.95);
+      border-color: rgba(255,255,255,0.08);
+      box-shadow: 0 24px 80px rgba(0,0,0,0.25);
+    }
+
+    html.dark-mode .download-btn {
+      background: var(--accent);
+      color: var(--text);
+    }
+  </style>
+</head>
+<body>
+
+  <!-- NAV -->
+  <nav>
+    <a href="index.html">Back</a>
+    <button class="dark-mode-toggle">🌙 Dark</button>
+  </nav>
+
+  <!-- STORE CONTENT -->
+  <section class="store-content">
+    <h1>Store</h1>
+    <p>Welcome to the store. This page is under construction and will feature AI-created tools, resources, and products coming soon.</p>
+
+    <div class="offer-card">
+      <h2>Free PDF Download</h2>
+      <p>Download a free PDF containing 116 content ideas you can use as inspiration. These are raw ideas only, so the file is a collection of concepts ready for your own creative execution.</p>
+      <a href="store-files/content-ideas/video_ideas.pdf" class="download-btn" download>Download PDF for Free</a>
+    </div>
+
+    <a href="index.html" class="back-btn">← Back Home</a>
+  </section>
+
+  <script src="script.js"></script>
+</body>
+</html>
