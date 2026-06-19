@@ -174,6 +174,17 @@ html.dark-mode .store-btn {
   align-items: center;
   justify-content: center;
   gap: 1rem;
+  padding: 3rem;
+}
+
+.hero-photo {
+  width: min(100%, 420px);
+  height: min(100%, 420px);
+  max-width: 100%;
+  aspect-ratio: 1 / 1;
+  object-fit: cover;
+  border-radius: 32px;
+  box-shadow: 0 30px 80px rgba(0,0,0,0.08);
 }
 
 .hero-initials {
