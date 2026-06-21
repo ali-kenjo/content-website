@@ -39,6 +39,8 @@ nav {
   padding: 1.5rem 3rem;
   display: flex;
   gap: 2.5rem;
+  justify-content: flex-end;
+  align-items: center;
 }
 
 nav a {
