@@ -27,6 +27,7 @@ function toggleDarkMode() {
 function updateButtonText(isDarkMode) {
   if (darkModeToggle) {
     darkModeToggle.textContent = isDarkMode ? '☀️ Light' : '🌙 Dark';
+    darkModeToggle.setAttribute('aria-pressed', isDarkMode);
   }
 }
 
