@@ -3,15 +3,15 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <meta name="description" content="Ali Kenjo — IT professional in Germany working across system administration, web development, and media production.">
+  <meta name="description" content="Ali Kenjo — builder of websites, apps, and tools, and cross-platform tech support in Germany.">
   <meta property="og:title" content="Ali Kenjo">
-  <meta property="og:description" content="Ali Kenjo — IT professional in Germany working across system administration, web development, and media production.">
+  <meta property="og:description" content="Ali Kenjo — builder of websites, apps, and tools, and cross-platform tech support in Germany.">
   <meta property="og:image" content="img.jpg">
   <meta property="og:type" content="website">
   <title>Ali Kenjo</title>
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,wght@0,400;0,700;1,400;1,700&family=IBM+Plex+Sans:wght@300;400;500;600&family=IBM+Plex+Mono:wght@400;500&display=swap" rel="stylesheet"/>
+  <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@300;400;500;700&display=swap" rel="stylesheet"/>
   <link rel="stylesheet" href="style.css">
   <link rel="icon" type="image/svg+xml" href="favicon.svg">
 </head>
@@ -19,37 +19,46 @@
 
   <!-- NAV -->
   <nav>
-    <div class="nav-badge">
-      <span class="badge-dot"></span>
-      <span class="badge-name">Ali Kenjo</span>
-    </div>
     <a href="index-de.html" class="lang-toggle" hreflang="de">🌐 DE</a>
-    <button class="dark-mode-toggle" aria-pressed="false">🌙 Night</button>
+    <button class="dark-mode-toggle" aria-pressed="false">🌙 Dark</button>
   </nav>
 
   <!-- HERO -->
-  <section id="identity" style="padding:0; max-width:100%; margin:0;">
-    <div class="hero-left">
-      <img src="img.jpg" alt="Ali Kenjo" class="hero-photo-circle">
-    </div>
-    <div class="hero-right">
-      <p class="hero-eyebrow">$ whoami</p>
-      <h1 class="hero-headline">Hey, I'm Ali.<span class="cursor" aria-hidden="true">▍</span></h1>
-      <p class="hero-label">A little about me</p>
+  <section id="identity" class="hero">
+    <div class="hero-text">
+      <p class="hero-eyebrow">Hi, I'm</p>
+      <h1 class="hero-name">Ali Kenjo</h1>
+      <p class="hero-tagline">Builder · Media · Support</p>
       <p class="hero-bio">
-        I'm an IT professional based in Germany, working across system administration,
-        web development, and media production. I build small tools and share free
-        resources on the side.
+        I build websites, apps, and tools with AI-assisted vibe-coding, and create
+        media — video, audio, and 3D — on the side. Off-screen, I help people get
+        unstuck on Windows, Linux, iPhone, and Android, remotely or in person.
       </p>
       <a href="store.html" class="store-btn-round" aria-label="Visit the store">Visit<br>Store</a>
     </div>
+    <div class="hero-photo-wrap">
+      <svg class="node-bg" viewBox="0 0 400 400" aria-hidden="true">
+        <circle cx="60" cy="80" r="4" fill="currentColor"/>
+        <circle cx="180" cy="40" r="3" fill="currentColor"/>
+        <circle cx="330" cy="90" r="5" fill="currentColor"/>
+        <circle cx="40" cy="250" r="3" fill="currentColor"/>
+        <circle cx="360" cy="260" r="4" fill="currentColor"/>
+        <circle cx="150" cy="350" r="3" fill="currentColor"/>
+        <circle cx="300" cy="370" r="4" fill="currentColor"/>
+        <line x1="60" y1="80" x2="180" y2="40" stroke="currentColor" stroke-width="1"/>
+        <line x1="180" y1="40" x2="330" y2="90" stroke="currentColor" stroke-width="1"/>
+        <line x1="40" y1="250" x2="150" y2="350" stroke="currentColor" stroke-width="1"/>
+        <line x1="360" y1="260" x2="300" y2="370" stroke="currentColor" stroke-width="1"/>
+        <line x1="60" y1="80" x2="40" y2="250" stroke="currentColor" stroke-width="1"/>
+        <line x1="330" y1="90" x2="360" y2="260" stroke="currentColor" stroke-width="1"/>
+      </svg>
+      <img src="img.jpg" alt="Ali Kenjo" class="hero-photo-circle">
+    </div>
   </section>
 
-  <div class="geo-divider" aria-hidden="true"></div>
-
   <!-- TOOLKIT -->
-  <section id="toolkit">
-    <p class="section-eyebrow">$ ls ~/toolkit</p>
+  <section id="toolkit" class="content-section">
+    <p class="section-eyebrow"><span class="node-dot"></span>Toolkit</p>
     <h2 class="section-headline">What I work with</h2>
     <div class="tag-cloud">
       <span class="tag">VS Code + Copilot / Codex</span>
@@ -68,30 +77,37 @@
     </div>
   </section>
 
-  <div class="geo-divider" aria-hidden="true"></div>
-
   <!-- SUPPORT -->
-  <section id="support">
-    <p class="section-eyebrow">$ support --platforms</p>
+  <section id="support" class="content-section">
+    <p class="section-eyebrow"><span class="node-dot"></span>Support</p>
     <h2 class="section-headline">Support, wherever you are</h2>
     <p class="section-text">
       Remote or in person, I help with setup, troubleshooting, and everyday tech
       problems — across platforms.
     </p>
-    <div class="platform-grid">
-      <div class="platform-item">Windows</div>
-      <div class="platform-item">Linux</div>
-      <div class="platform-item">iPhone</div>
-      <div class="platform-item">Android</div>
+    <div class="orbit-wrap">
+      <svg viewBox="0 0 220 220" width="220" height="220" aria-hidden="true">
+        <line x1="110" y1="110" x2="110" y2="48" style="stroke:var(--accent);stroke-width:1.2;opacity:0.5"/>
+        <line x1="110" y1="110" x2="172" y2="110" style="stroke:var(--accent);stroke-width:1.2;opacity:0.5"/>
+        <line x1="110" y1="110" x2="110" y2="172" style="stroke:var(--accent);stroke-width:1.2;opacity:0.5"/>
+        <line x1="110" y1="110" x2="48" y2="110" style="stroke:var(--accent);stroke-width:1.2;opacity:0.5"/>
+        <circle cx="110" cy="40" r="18" style="fill:var(--bg-dark);stroke:var(--accent);stroke-width:1.5"/>
+        <text x="110" y="43" text-anchor="middle" style="font-family:var(--font-body);font-size:9px;fill:var(--text)">WIN</text>
+        <circle cx="180" cy="110" r="18" style="fill:var(--bg-dark);stroke:var(--accent);stroke-width:1.5"/>
+        <text x="180" y="113" text-anchor="middle" style="font-family:var(--font-body);font-size:9px;fill:var(--text)">iOS</text>
+        <circle cx="110" cy="180" r="18" style="fill:var(--bg-dark);stroke:var(--accent);stroke-width:1.5"/>
+        <text x="110" y="183" text-anchor="middle" style="font-family:var(--font-body);font-size:9px;fill:var(--text)">AND</text>
+        <circle cx="40" cy="110" r="18" style="fill:var(--bg-dark);stroke:var(--accent);stroke-width:1.5"/>
+        <text x="40" y="113" text-anchor="middle" style="font-family:var(--font-body);font-size:9px;fill:var(--text)">LNX</text>
+        <circle cx="110" cy="110" r="24" style="fill:var(--accent)"/>
+        <text x="110" y="114" text-anchor="middle" style="font-family:var(--font-body);font-size:10px;font-weight:700;fill:var(--bg)">YOU</text>
+      </svg>
     </div>
-    <p class="section-note">In-person support available too — just ask.</p>
   </section>
 
-  <div class="geo-divider" aria-hidden="true"></div>
-
   <!-- BUILD -->
-  <section id="build">
-    <p class="section-eyebrow">$ build --stack</p>
+  <section id="build" class="content-section">
+    <p class="section-eyebrow"><span class="node-dot"></span>Build</p>
     <h2 class="section-headline">Websites, apps, tools &amp; SaaS</h2>
     <p class="section-text">
       I design and build websites, apps, small tools, and SaaS products —
@@ -102,7 +118,7 @@
   <!-- FOOTER -->
   <footer>
     <span>© 2026 Ali Kenjo</span>
-    <span>IT · Web · Media — Germany</span>
+    <span>IT <span class="footer-dot">●</span> Web <span class="footer-dot">●</span> Media — Germany</span>
   </footer>
 
   <script src="script.js"></script>
