@@ -11,14 +11,35 @@
   <title>Ali Kenjo</title>
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@300;400;500;700&display=swap" rel="stylesheet"/>
+  <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@500;600;700;800&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet"/>
   <link rel="stylesheet" href="style.css">
   <link rel="icon" type="image/svg+xml" href="favicon.svg">
+  <script>
+    (function () {
+      try {
+        var saved = localStorage.getItem('darkMode');
+        var prefers = window.matchMedia('(prefers-color-scheme: dark)').matches;
+        if (saved === 'true' || (saved === null && prefers)) {
+          document.documentElement.classList.add('dark-mode');
+        }
+      } catch (e) {}
+    })();
+  </script>
 </head>
 <body>
 
+  <canvas id="bg-canvas" aria-hidden="true"></canvas>
+  <div class="scroll-progress" aria-hidden="true"><span class="scroll-progress-bar"></span></div>
+
   <!-- NAV -->
   <nav>
+    <a href="#identity" class="nav-logo" aria-label="Back to top">AK</a>
+    <div class="nav-links">
+      <a href="#toolkit" class="nav-link">Toolkit</a>
+      <a href="#support" class="nav-link">Support</a>
+      <a href="#build" class="nav-link">Build</a>
+    </div>
+    <div class="nav-sep"></div>
     <a href="index-de.html" class="lang-toggle" hreflang="de">🌐 DE</a>
     <button class="dark-mode-toggle" aria-pressed="false">🌙 Dark</button>
   </nav>
@@ -26,99 +47,129 @@
   <!-- HERO -->
   <section id="identity" class="hero">
     <div class="hero-text">
-      <p class="hero-eyebrow">Hi, I'm</p>
+      <p class="hero-eyebrow"><span class="pulse-dot"></span>Hi, I'm</p>
       <h1 class="hero-name">Ali Kenjo</h1>
-      <p class="hero-tagline">Builder · Media · Support</p>
+      <div class="hero-chips">
+        <span class="chip chip--1">Builder</span>
+        <span class="chip chip--2">Media</span>
+        <span class="chip chip--3">Support</span>
+      </div>
       <p class="hero-bio">
         I build websites, apps, and tools with AI-assisted vibe-coding, and create
         media — video, audio, and 3D — on the side. Off-screen, I help people get
-        unstuck on Windows, Linux, iPhone, and Android, remotely or in person.
+        unstuck on Windows and Linux, remotely or in person.
       </p>
-      <a href="store.html" class="store-btn-round" aria-label="Visit the store">Visit<br>Store</a>
+      <div class="hero-actions">
+        <a href="store.html" class="store-btn-round magnetic" aria-label="Visit the store">Visit<br>Store</a>
+      </div>
     </div>
     <div class="hero-photo-wrap">
-      <svg class="node-bg" viewBox="0 0 400 400" aria-hidden="true">
-        <circle cx="60" cy="80" r="4" fill="currentColor"/>
-        <circle cx="180" cy="40" r="3" fill="currentColor"/>
-        <circle cx="330" cy="90" r="5" fill="currentColor"/>
-        <circle cx="40" cy="250" r="3" fill="currentColor"/>
-        <circle cx="360" cy="260" r="4" fill="currentColor"/>
-        <circle cx="150" cy="350" r="3" fill="currentColor"/>
-        <circle cx="300" cy="370" r="4" fill="currentColor"/>
-        <line x1="60" y1="80" x2="180" y2="40" stroke="currentColor" stroke-width="1"/>
-        <line x1="180" y1="40" x2="330" y2="90" stroke="currentColor" stroke-width="1"/>
-        <line x1="40" y1="250" x2="150" y2="350" stroke="currentColor" stroke-width="1"/>
-        <line x1="360" y1="260" x2="300" y2="370" stroke="currentColor" stroke-width="1"/>
-        <line x1="60" y1="80" x2="40" y2="250" stroke="currentColor" stroke-width="1"/>
-        <line x1="330" y1="90" x2="360" y2="260" stroke="currentColor" stroke-width="1"/>
-      </svg>
-      <img src="img.jpg" alt="Ali Kenjo" class="hero-photo-circle">
+      <div class="photo-ring" aria-hidden="true"></div>
+      <img src="img.jpg" alt="Ali Kenjo" class="hero-photo-circle tilt-el">
     </div>
   </section>
 
   <!-- TOOLKIT -->
-  <section id="toolkit" class="content-section">
-    <p class="section-eyebrow"><span class="node-dot"></span>Toolkit</p>
+  <section id="toolkit" class="content-section content-section--1 reveal">
+    <p class="section-eyebrow section-eyebrow--1"><span class="node-dot"></span>Toolkit</p>
     <h2 class="section-headline">What I work with</h2>
+    <p class="section-hint">Tap a tool to see it light up.</p>
     <div class="tag-cloud">
-      <span class="tag">VS Code + Copilot / Codex</span>
-      <span class="tag">Docker + n8n</span>
-      <span class="tag">Blender</span>
-      <span class="tag">Kdenlive</span>
-      <span class="tag">OBS Studio</span>
-      <span class="tag">Audacity</span>
-      <span class="tag">GIMP</span>
-      <span class="tag">Obsidian</span>
-      <span class="tag">draw.io</span>
-      <span class="tag">OnlyOffice</span>
-      <span class="tag">TeamViewer</span>
-      <span class="tag">Kali Linux</span>
-      <span class="tag">Pop!_OS</span>
+      <button type="button" class="tag">💻 VS Code + Copilot / Codex</button>
+      <button type="button" class="tag">🐳 Docker + n8n</button>
+      <button type="button" class="tag">🧊 Blender</button>
+      <button type="button" class="tag">🎬 Kdenlive</button>
+      <button type="button" class="tag">📹 OBS Studio</button>
+      <button type="button" class="tag">🎧 Audacity</button>
+      <button type="button" class="tag">🎨 GIMP</button>
     </div>
   </section>
 
   <!-- SUPPORT -->
-  <section id="support" class="content-section">
-    <p class="section-eyebrow"><span class="node-dot"></span>Support</p>
+  <section id="support" class="content-section content-section--2 reveal">
+    <p class="section-eyebrow section-eyebrow--2"><span class="node-dot"></span>Support</p>
     <h2 class="section-headline">Support, wherever you are</h2>
     <p class="section-text">
       Remote or in person, I help with setup, troubleshooting, and everyday tech
-      problems — across platforms.
+      problems — across Windows and Linux, in Arabic, English, or German.
     </p>
-    <div class="orbit-wrap">
-      <svg viewBox="0 0 220 220" width="220" height="220" aria-hidden="true">
-        <line x1="110" y1="110" x2="110" y2="48" style="stroke:var(--accent);stroke-width:1.2;opacity:0.5"/>
-        <line x1="110" y1="110" x2="172" y2="110" style="stroke:var(--accent);stroke-width:1.2;opacity:0.5"/>
-        <line x1="110" y1="110" x2="110" y2="172" style="stroke:var(--accent);stroke-width:1.2;opacity:0.5"/>
-        <line x1="110" y1="110" x2="48" y2="110" style="stroke:var(--accent);stroke-width:1.2;opacity:0.5"/>
-        <circle cx="110" cy="40" r="18" style="fill:var(--bg-dark);stroke:var(--accent);stroke-width:1.5"/>
-        <text x="110" y="43" text-anchor="middle" style="font-family:var(--font-body);font-size:9px;fill:var(--text)">WIN</text>
-        <circle cx="180" cy="110" r="18" style="fill:var(--bg-dark);stroke:var(--accent);stroke-width:1.5"/>
-        <text x="180" y="113" text-anchor="middle" style="font-family:var(--font-body);font-size:9px;fill:var(--text)">iOS</text>
-        <circle cx="110" cy="180" r="18" style="fill:var(--bg-dark);stroke:var(--accent);stroke-width:1.5"/>
-        <text x="110" y="183" text-anchor="middle" style="font-family:var(--font-body);font-size:9px;fill:var(--text)">AND</text>
-        <circle cx="40" cy="110" r="18" style="fill:var(--bg-dark);stroke:var(--accent);stroke-width:1.5"/>
-        <text x="40" y="113" text-anchor="middle" style="font-family:var(--font-body);font-size:9px;fill:var(--text)">LNX</text>
-        <circle cx="110" cy="110" r="24" style="fill:var(--accent)"/>
-        <text x="110" y="114" text-anchor="middle" style="font-family:var(--font-body);font-size:10px;font-weight:700;fill:var(--bg)">YOU</text>
-      </svg>
+    <div class="orbit-group">
+      <div class="orbit-item">
+        <div class="orbit-wrap">
+          <svg viewBox="0 0 220 220" width="220" height="220" aria-hidden="true">
+            <circle class="orbit-sweep" cx="110" cy="110" r="95" style="stroke:var(--c3)"/>
+            <line x1="110" y1="110" x2="40" y2="110" style="stroke:var(--c3);stroke-width:1.2;opacity:0.5"/>
+            <line x1="110" y1="110" x2="180" y2="110" style="stroke:var(--c3);stroke-width:1.2;opacity:0.5"/>
+            <g class="orbit-node">
+              <circle cx="40" cy="110" r="18" style="fill:var(--bg-dark);stroke:var(--c3);stroke-width:1.5"/>
+              <text x="40" y="113" text-anchor="middle" style="font-family:var(--font-body);font-size:9px;fill:var(--text)">WIN</text>
+            </g>
+            <g class="orbit-node">
+              <circle cx="180" cy="110" r="18" style="fill:var(--bg-dark);stroke:var(--c3);stroke-width:1.5"/>
+              <text x="180" y="113" text-anchor="middle" style="font-family:var(--font-body);font-size:9px;fill:var(--text)">LNX</text>
+            </g>
+            <circle class="orbit-center" cx="110" cy="110" r="24" style="fill:var(--c3)"/>
+            <text x="110" y="114" text-anchor="middle" style="font-family:var(--font-body);font-size:10px;font-weight:700;fill:var(--bg)">YOU</text>
+          </svg>
+        </div>
+        <p class="section-note">Platforms</p>
+      </div>
+      <div class="orbit-item">
+        <div class="orbit-wrap">
+          <svg viewBox="0 0 220 220" width="220" height="220" aria-hidden="true">
+            <circle class="orbit-sweep" cx="110" cy="110" r="95" style="stroke:var(--c2)"/>
+            <line x1="110" y1="110" x2="110" y2="40" style="stroke:var(--c2);stroke-width:1.2;opacity:0.5"/>
+            <line x1="110" y1="110" x2="172" y2="146" style="stroke:var(--c2);stroke-width:1.2;opacity:0.5"/>
+            <line x1="110" y1="110" x2="48" y2="146" style="stroke:var(--c2);stroke-width:1.2;opacity:0.5"/>
+            <g class="orbit-node">
+              <circle cx="110" cy="40" r="18" style="fill:var(--bg-dark);stroke:var(--c2);stroke-width:1.5"/>
+              <text x="110" y="43" text-anchor="middle" style="font-family:var(--font-body);font-size:9px;fill:var(--text)">EN</text>
+            </g>
+            <g class="orbit-node">
+              <circle cx="172" cy="146" r="18" style="fill:var(--bg-dark);stroke:var(--c2);stroke-width:1.5"/>
+              <text x="172" y="149" text-anchor="middle" style="font-family:var(--font-body);font-size:9px;fill:var(--text)">DE</text>
+            </g>
+            <g class="orbit-node">
+              <circle cx="48" cy="146" r="18" style="fill:var(--bg-dark);stroke:var(--c2);stroke-width:1.5"/>
+              <text x="48" y="149" text-anchor="middle" style="font-family:var(--font-body);font-size:9px;fill:var(--text)">AR</text>
+            </g>
+            <circle class="orbit-center" cx="110" cy="110" r="24" style="fill:var(--c2)"/>
+            <text x="110" y="114" text-anchor="middle" style="font-family:var(--font-body);font-size:10px;font-weight:700;fill:var(--bg)">YOU</text>
+          </svg>
+        </div>
+        <p class="section-note">Languages</p>
+      </div>
     </div>
   </section>
 
   <!-- BUILD -->
-  <section id="build" class="content-section">
-    <p class="section-eyebrow"><span class="node-dot"></span>Build</p>
+  <section id="build" class="content-section content-section--3 reveal">
+    <p class="section-eyebrow section-eyebrow--3"><span class="node-dot"></span>Build</p>
     <h2 class="section-headline">Websites, apps, tools &amp; SaaS</h2>
     <p class="section-text">
       I design and build websites, apps, small tools, and SaaS products —
       using AI-assisted "vibe-coding" workflows to move fast without cutting corners.
     </p>
+    <div class="process-track">
+      <div class="process-step">
+        <span class="process-num">1</span>
+        <span class="process-label">Design</span>
+      </div>
+      <div class="process-step">
+        <span class="process-num">2</span>
+        <span class="process-label">Build</span>
+      </div>
+      <div class="process-step">
+        <span class="process-num">3</span>
+        <span class="process-label">Ship</span>
+      </div>
+    </div>
   </section>
 
   <!-- FOOTER -->
-  <footer>
+  <footer class="reveal">
     <span>© 2026 Ali Kenjo</span>
-    <span>IT <span class="footer-dot">●</span> Web <span class="footer-dot">●</span> Media — Germany</span>
+    <span class="footer-status"><span class="pulse-dot"></span>IT · Web · Media — Germany</span>
   </footer>
 
   <script src="script.js"></script>

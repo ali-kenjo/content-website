@@ -3,106 +3,173 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <meta name="description" content="Ali Kenjo — IT-Profi in Deutschland an der Schnittstelle von Systemadministration, Webentwicklung und Medienproduktion.">
+  <meta name="description" content="Ali Kenjo — baut Websites, Apps und Tools und bietet plattformübergreifenden Tech-Support in Deutschland.">
   <meta property="og:title" content="Ali Kenjo">
-  <meta property="og:description" content="Ali Kenjo — IT-Profi in Deutschland an der Schnittstelle von Systemadministration, Webentwicklung und Medienproduktion.">
+  <meta property="og:description" content="Ali Kenjo — baut Websites, Apps und Tools und bietet plattformübergreifenden Tech-Support in Deutschland.">
   <meta property="og:image" content="img.jpg">
   <meta property="og:type" content="website">
   <title>Ali Kenjo</title>
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,wght@0,400;0,700;1,400;1,700&family=IBM+Plex+Sans:wght@300;400;500;600&family=IBM+Plex+Mono:wght@400;500&display=swap" rel="stylesheet"/>
+  <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@500;600;700;800&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet"/>
   <link rel="stylesheet" href="style.css">
   <link rel="icon" type="image/svg+xml" href="favicon.svg">
+  <script>
+    (function () {
+      try {
+        var saved = localStorage.getItem('darkMode');
+        var prefers = window.matchMedia('(prefers-color-scheme: dark)').matches;
+        if (saved === 'true' || (saved === null && prefers)) {
+          document.documentElement.classList.add('dark-mode');
+        }
+      } catch (e) {}
+    })();
+  </script>
 </head>
 <body>
 
+  <canvas id="bg-canvas" aria-hidden="true"></canvas>
+  <div class="scroll-progress" aria-hidden="true"><span class="scroll-progress-bar"></span></div>
+
   <!-- NAV -->
   <nav>
-    <div class="nav-badge">
-      <span class="badge-dot"></span>
-      <span class="badge-name">Ali Kenjo</span>
+    <a href="#identity" class="nav-logo" aria-label="Nach oben">AK</a>
+    <div class="nav-links">
+      <a href="#toolkit" class="nav-link">Werkzeuge</a>
+      <a href="#support" class="nav-link">Support</a>
+      <a href="#build" class="nav-link">Erstellen</a>
     </div>
+    <div class="nav-sep"></div>
     <a href="index.html" class="lang-toggle" hreflang="en">🌐 EN</a>
     <button class="dark-mode-toggle" aria-pressed="false">🌙 Nacht</button>
   </nav>
 
   <!-- HERO -->
-  <section id="identity" style="padding:0; max-width:100%; margin:0;">
-    <div class="hero-left">
-      <img src="img.jpg" alt="Ali Kenjo" class="hero-photo-circle">
-    </div>
-    <div class="hero-right">
-      <p class="hero-eyebrow">$ wer_bin_ich</p>
-      <h1 class="hero-headline">Hallo, ich bin Ali.<span class="cursor" aria-hidden="true">▍</span></h1>
-      <p class="hero-label">Ein bisschen über mich</p>
+  <section id="identity" class="hero">
+    <div class="hero-text">
+      <p class="hero-eyebrow"><span class="pulse-dot"></span>Hallo, ich bin</p>
+      <h1 class="hero-name">Ali Kenjo</h1>
+      <div class="hero-chips">
+        <span class="chip chip--1">Entwickler</span>
+        <span class="chip chip--2">Medien</span>
+        <span class="chip chip--3">Support</span>
+      </div>
       <p class="hero-bio">
-        Ich bin IT-Profi mit Sitz in Deutschland und arbeite an der Schnittstelle von Systemadministration,
-        Webentwicklung und Medienproduktion. Nebenbei entwickle ich kleine Tools und teile kostenlose
-        Ressourcen.
+        Ich baue Websites, Apps und Tools mit KI-gestütztem Vibe-Coding und erstelle
+        nebenbei Medien — Video, Audio und 3D. Abseits des Bildschirms helfe ich
+        Menschen bei Problemen mit Windows und Linux — remote oder vor Ort.
       </p>
-      <a href="store.html" class="store-btn-round" aria-label="Zum Store gehen">Zum<br>Store</a>
+      <div class="hero-actions">
+        <a href="store.html" class="store-btn-round magnetic" aria-label="Zum Store gehen">Zum<br>Store</a>
+      </div>
+    </div>
+    <div class="hero-photo-wrap">
+      <div class="photo-ring" aria-hidden="true"></div>
+      <img src="img.jpg" alt="Ali Kenjo" class="hero-photo-circle tilt-el">
     </div>
   </section>
-
-  <div class="geo-divider" aria-hidden="true"></div>
 
   <!-- TOOLKIT -->
-  <section id="toolkit">
-    <p class="section-eyebrow">$ ls ~/werkzeuge</p>
+  <section id="toolkit" class="content-section content-section--1 reveal">
+    <p class="section-eyebrow section-eyebrow--1"><span class="node-dot"></span>Werkzeuge</p>
     <h2 class="section-headline">Womit ich arbeite</h2>
+    <p class="section-hint">Tippe auf ein Tool, damit es aufleuchtet.</p>
     <div class="tag-cloud">
-      <span class="tag">VS Code + Copilot / Codex</span>
-      <span class="tag">Docker + n8n</span>
-      <span class="tag">Blender</span>
-      <span class="tag">Kdenlive</span>
-      <span class="tag">OBS Studio</span>
-      <span class="tag">Audacity</span>
-      <span class="tag">GIMP</span>
-      <span class="tag">Obsidian</span>
-      <span class="tag">draw.io</span>
-      <span class="tag">OnlyOffice</span>
-      <span class="tag">TeamViewer</span>
-      <span class="tag">Kali Linux</span>
-      <span class="tag">Pop!_OS</span>
+      <button type="button" class="tag">💻 VS Code + Copilot / Codex</button>
+      <button type="button" class="tag">🐳 Docker + n8n</button>
+      <button type="button" class="tag">🧊 Blender</button>
+      <button type="button" class="tag">🎬 Kdenlive</button>
+      <button type="button" class="tag">📹 OBS Studio</button>
+      <button type="button" class="tag">🎧 Audacity</button>
+      <button type="button" class="tag">🎨 GIMP</button>
     </div>
   </section>
 
-  <div class="geo-divider" aria-hidden="true"></div>
-
   <!-- SUPPORT -->
-  <section id="support">
-    <p class="section-eyebrow">$ support --plattformen</p>
+  <section id="support" class="content-section content-section--2 reveal">
+    <p class="section-eyebrow section-eyebrow--2"><span class="node-dot"></span>Support</p>
     <h2 class="section-headline">Support, wo auch immer du bist</h2>
     <p class="section-text">
       Remote oder vor Ort helfe ich bei Einrichtung, Fehlerbehebung und
-      alltäglichen Technikproblemen — plattformübergreifend.
+      alltäglichen Technikproblemen — auf Windows und Linux, auf Arabisch, Englisch oder Deutsch.
     </p>
-    <div class="platform-grid">
-      <div class="platform-item">Windows</div>
-      <div class="platform-item">Linux</div>
-      <div class="platform-item">iPhone</div>
-      <div class="platform-item">Android</div>
+    <div class="orbit-group">
+      <div class="orbit-item">
+        <div class="orbit-wrap">
+          <svg viewBox="0 0 220 220" width="220" height="220" aria-hidden="true">
+            <circle class="orbit-sweep" cx="110" cy="110" r="95" style="stroke:var(--c3)"/>
+            <line x1="110" y1="110" x2="40" y2="110" style="stroke:var(--c3);stroke-width:1.2;opacity:0.5"/>
+            <line x1="110" y1="110" x2="180" y2="110" style="stroke:var(--c3);stroke-width:1.2;opacity:0.5"/>
+            <g class="orbit-node">
+              <circle cx="40" cy="110" r="18" style="fill:var(--bg-dark);stroke:var(--c3);stroke-width:1.5"/>
+              <text x="40" y="113" text-anchor="middle" style="font-family:var(--font-body);font-size:9px;fill:var(--text)">WIN</text>
+            </g>
+            <g class="orbit-node">
+              <circle cx="180" cy="110" r="18" style="fill:var(--bg-dark);stroke:var(--c3);stroke-width:1.5"/>
+              <text x="180" y="113" text-anchor="middle" style="font-family:var(--font-body);font-size:9px;fill:var(--text)">LNX</text>
+            </g>
+            <circle class="orbit-center" cx="110" cy="110" r="24" style="fill:var(--c3)"/>
+            <text x="110" y="114" text-anchor="middle" style="font-family:var(--font-body);font-size:10px;font-weight:700;fill:var(--bg)">DU</text>
+          </svg>
+        </div>
+        <p class="section-note">Plattformen</p>
+      </div>
+      <div class="orbit-item">
+        <div class="orbit-wrap">
+          <svg viewBox="0 0 220 220" width="220" height="220" aria-hidden="true">
+            <circle class="orbit-sweep" cx="110" cy="110" r="95" style="stroke:var(--c2)"/>
+            <line x1="110" y1="110" x2="110" y2="40" style="stroke:var(--c2);stroke-width:1.2;opacity:0.5"/>
+            <line x1="110" y1="110" x2="172" y2="146" style="stroke:var(--c2);stroke-width:1.2;opacity:0.5"/>
+            <line x1="110" y1="110" x2="48" y2="146" style="stroke:var(--c2);stroke-width:1.2;opacity:0.5"/>
+            <g class="orbit-node">
+              <circle cx="110" cy="40" r="18" style="fill:var(--bg-dark);stroke:var(--c2);stroke-width:1.5"/>
+              <text x="110" y="43" text-anchor="middle" style="font-family:var(--font-body);font-size:9px;fill:var(--text)">DE</text>
+            </g>
+            <g class="orbit-node">
+              <circle cx="172" cy="146" r="18" style="fill:var(--bg-dark);stroke:var(--c2);stroke-width:1.5"/>
+              <text x="172" y="149" text-anchor="middle" style="font-family:var(--font-body);font-size:9px;fill:var(--text)">EN</text>
+            </g>
+            <g class="orbit-node">
+              <circle cx="48" cy="146" r="18" style="fill:var(--bg-dark);stroke:var(--c2);stroke-width:1.5"/>
+              <text x="48" y="149" text-anchor="middle" style="font-family:var(--font-body);font-size:9px;fill:var(--text)">AR</text>
+            </g>
+            <circle class="orbit-center" cx="110" cy="110" r="24" style="fill:var(--c2)"/>
+            <text x="110" y="114" text-anchor="middle" style="font-family:var(--font-body);font-size:10px;font-weight:700;fill:var(--bg)">DU</text>
+          </svg>
+        </div>
+        <p class="section-note">Sprachen</p>
+      </div>
     </div>
-    <p class="section-note">Persönlicher Support vor Ort ist ebenfalls möglich — einfach fragen.</p>
   </section>
 
-  <div class="geo-divider" aria-hidden="true"></div>
-
   <!-- BUILD -->
-  <section id="build">
-    <p class="section-eyebrow">$ build --stack</p>
+  <section id="build" class="content-section content-section--3 reveal">
+    <p class="section-eyebrow section-eyebrow--3"><span class="node-dot"></span>Erstellen</p>
     <h2 class="section-headline">Websites, Apps, Tools &amp; SaaS</h2>
     <p class="section-text">
       Ich entwerfe und baue Websites, Apps, kleine Tools und SaaS-Produkte —
       mit KI-gestützten „Vibe-Coding"-Workflows, um schnell und trotzdem sauber zu arbeiten.
     </p>
+    <div class="process-track">
+      <div class="process-step">
+        <span class="process-num">1</span>
+        <span class="process-label">Entwerfen</span>
+      </div>
+      <div class="process-step">
+        <span class="process-num">2</span>
+        <span class="process-label">Bauen</span>
+      </div>
+      <div class="process-step">
+        <span class="process-num">3</span>
+        <span class="process-label">Liefern</span>
+      </div>
+    </div>
   </section>
 
   <!-- FOOTER -->
-  <footer>
+  <footer class="reveal">
     <span>© 2026 Ali Kenjo</span>
-    <span>IT · Web · Medien — Deutschland</span>
+    <span class="footer-status"><span class="pulse-dot"></span>IT · Web · Medien — Deutschland</span>
   </footer>
 
   <script src="script.js"></script>

@@ -4,8 +4,20 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
   <title>Store - Ali Kenjo</title>
-  <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,700;1,400;1,700&family=Space+Grotesk:wght@300;400;500&display=swap" rel="stylesheet"/>
+  <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@500;600;700;800&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet"/>
   <link rel="stylesheet" href="style.css">
+  <link rel="icon" type="image/svg+xml" href="favicon.svg">
+  <script>
+    (function () {
+      try {
+        var saved = localStorage.getItem('darkMode');
+        var prefers = window.matchMedia('(prefers-color-scheme: dark)').matches;
+        if (saved === 'true' || (saved === null && prefers)) {
+          document.documentElement.classList.add('dark-mode');
+        }
+      } catch (e) {}
+    })();
+  </script>
   <style>
     .store-content {
       min-height: 100vh;
@@ -19,8 +31,14 @@
 
     .store-content h1 {
       font-family: var(--font-display);
+      font-weight: 700;
       font-size: clamp(3rem, 8vw, 5rem);
       margin-bottom: 1.5rem;
+      color: var(--c2);
+      background: var(--gradient);
+      -webkit-background-clip: text;
+      background-clip: text;
+      -webkit-text-fill-color: transparent;
     }
 
     .store-content p {
@@ -35,39 +53,56 @@
       display: inline-block;
       margin-top: 2rem;
       padding: 0.8rem 2rem;
-      background: var(--accent);
-      color: var(--text);
+      background: var(--gradient);
+      color: #fdf8f4;
       border: none;
-      border-radius: 4px;
+      border-radius: 999px;
       font-family: var(--font-body);
       font-size: 0.75rem;
-      font-weight: 500;
-      letter-spacing: 0.15em;
+      font-weight: 700;
+      letter-spacing: 0.12em;
       text-transform: uppercase;
       text-decoration: none;
-      transition: all 0.2s;
+      transition: box-shadow 0.3s;
+      box-shadow: 0 10px 26px color-mix(in srgb, var(--c2) 32%, transparent);
       cursor: pointer;
     }
 
     .back-btn:hover {
-      opacity: 0.8;
-      transform: translateY(-2px);
+      box-shadow: 0 14px 34px color-mix(in srgb, var(--c2) 42%, transparent);
     }
 
     .offer-card {
+      position: relative;
+      overflow: hidden;
       width: min(100%, 560px);
-      background: rgba(255,255,255,0.95);
-      border: 1px solid rgba(0,0,0,0.08);
-      border-radius: 24px;
-      box-shadow: 0 24px 80px rgba(0,0,0,0.08);
+      background: var(--surface);
+      border: 1px solid var(--rule);
+      border-radius: var(--radius-lg);
+      box-shadow: 0 24px 80px var(--shadow);
       padding: 2rem;
       margin-top: 2rem;
       text-align: left;
+      transition: transform 0.3s ease, box-shadow 0.3s ease;
+    }
+
+    .offer-card:hover {
+      transform: translateY(-4px);
+      box-shadow: 0 30px 90px var(--shadow-strong);
+    }
+
+    .offer-card::before {
+      content: '';
+      position: absolute;
+      top: 0; left: 0; right: 0;
+      height: 4px;
+      background: var(--gradient);
     }
 
     .offer-card h2 {
       margin-bottom: 0.75rem;
       font-family: var(--font-display);
+      font-weight: 600;
       font-size: 2rem;
     }
 
@@ -89,46 +124,45 @@
       letter-spacing: 0.12em;
       text-transform: uppercase;
       text-decoration: none;
-      transition: transform 0.2s, opacity 0.2s;
+      transition: transform 0.3s var(--ease-bounce), opacity 0.2s, box-shadow 0.3s;
+      box-shadow: 0 10px 26px var(--shadow);
     }
 
     .download-btn:hover {
-      opacity: 0.9;
-      transform: translateY(-2px);
-    }
-
-    html.dark-mode .offer-card {
-      background: rgba(24,24,24,0.95);
-      border-color: rgba(255,255,255,0.08);
-      box-shadow: 0 24px 80px rgba(0,0,0,0.25);
+      box-shadow: 0 16px 36px var(--shadow-strong);
     }
 
     html.dark-mode .download-btn {
-      background: var(--accent);
-      color: var(--text);
+      background: var(--c2);
+      color: var(--bg);
     }
   </style>
 </head>
 <body>
 
+  <canvas id="bg-canvas" aria-hidden="true"></canvas>
+  <div class="scroll-progress" aria-hidden="true"><span class="scroll-progress-bar"></span></div>
+
   <!-- NAV -->
   <nav>
-    <a href="index.html">Back</a>
-    <button class="dark-mode-toggle">🌙 Dark</button>
+    <a href="index.html" class="nav-logo" aria-label="Back home">AK</a>
+    <div class="nav-sep"></div>
+    <a href="index.html" class="lang-toggle">← Back</a>
+    <button class="dark-mode-toggle" aria-pressed="false">🌙 Dark</button>
   </nav>
 
   <!-- STORE CONTENT -->
-  <section class="store-content">
+  <section class="store-content reveal">
     <h1>Store</h1>
     <p>Welcome to the store. This page is under construction and will feature AI-created tools, resources, and products coming soon.</p>
 
     <div class="offer-card">
       <h2>Free PDF Download</h2>
       <p>Download a free PDF containing 116 content ideas you can use as inspiration. These are raw ideas only, so the file is a collection of concepts ready for your own creative execution.</p>
-      <a href="store-files/content-ideas/video_ideas.pdf" class="download-btn" download>Download PDF for Free</a>
+      <a href="store-files/content-ideas/video_ideas.pdf" class="download-btn magnetic" download>Download PDF for Free</a>
     </div>
 
-    <a href="index.html" class="back-btn">← Back Home</a>
+    <a href="index.html" class="back-btn magnetic">← Back Home</a>
   </section>
 
   <script src="script.js"></script>
