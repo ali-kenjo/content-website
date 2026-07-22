@@ -544,6 +544,16 @@ nav a:focus-visible,
   box-shadow: 0 8px 18px color-mix(in srgb, var(--accent-hover) 40%, transparent);
 }
 
+.tool-info {
+  margin-top: 1.25rem;
+  min-height: 2.6em;
+  max-width: 560px;
+  font-size: 0.92rem;
+  line-height: 1.6;
+  color: var(--text-secondary);
+  transition: color 0.2s ease;
+}
+
 /* ── ORBIT DIAGRAMS ── */
 .orbit-wrap {
   display: flex;

@@ -11,22 +11,33 @@ const TRANSLATIONS = {
       chip1: 'Builder',
       chip2: 'Media',
       chip3: 'Support',
-      bio: `I build websites, apps, and tools with AI-assisted vibe-coding, and create
-        media — video, audio, and 3D — on the side. Off-screen, I help people get
-        unstuck on Windows and Linux, remotely or in person.`,
+      bio: `I build websites, apps, and tools by vibe-coding with AI, and mess around
+        with media on the side — video, audio, 3D, whatever sticks. Away from the
+        screen, I help people get unstuck on Windows and Linux, remotely or in person.`,
       storeAria: 'Visit the store',
       storeText: 'Visit<br>Store',
     },
     toolkit: {
       eyebrow: 'Toolkit',
       headline: 'What I work with',
-      hint: 'Tap a tool to see it light up.',
+      hint: "Hover or tap a tool to see what it's for.",
+      infoDefault: "Hover or tap a tool above to find out what it's for.",
+      tools: {
+        vscode: "My daily driver — I pair it with AI so I can vibe-code fast without losing the plot.",
+        docker: 'Docker keeps my environments clean and portable, n8n handles the automations I\'d rather not do by hand.',
+        blender: 'For 3D modeling, animation, and the occasional render that eats my evening.',
+        kdenlive: 'Where I cut and polish video footage.',
+        obs: 'For screen recording and streaming.',
+        audacity: 'For cleaning up and editing audio.',
+        gimp: 'My go-to for image editing when I need a free Photoshop stand-in.',
+      },
     },
     support: {
       eyebrow: 'Support',
       headline: 'Support, wherever you are',
-      text: `Remote or in person, I help with setup, troubleshooting, and everyday tech
-        problems — across Windows and Linux, in Arabic, English, or German.`,
+      text: `Whether it's remote or face to face, I'll help you sort out setup issues,
+        chase down the weird bugs, and everyday tech headaches — on Windows or Linux,
+        in Arabic, English, or German.`,
       you: 'YOU',
       platforms: 'Platforms',
       languages: 'Languages',
@@ -35,7 +46,7 @@ const TRANSLATIONS = {
       eyebrow: 'Build',
       headline: 'Websites, apps, tools & SaaS',
       text: `I design and build websites, apps, small tools, and SaaS products —
-        using AI-assisted "vibe-coding" workflows to move fast without cutting corners.`,
+        leaning on AI-assisted vibe-coding to move fast without cutting corners.`,
       step1: 'Design',
       step2: 'Build',
       step3: 'Ship',
@@ -54,22 +65,34 @@ const TRANSLATIONS = {
       chip1: 'Entwickler',
       chip2: 'Medien',
       chip3: 'Support',
-      bio: `Ich baue Websites, Apps und Tools mit KI-gestütztem Vibe-Coding und erstelle
-        nebenbei Medien — Video, Audio und 3D. Abseits des Bildschirms helfe ich
-        Menschen bei Problemen mit Windows und Linux — remote oder vor Ort.`,
+      bio: `Ich baue Websites, Apps und Tools, indem ich mit KI vibe-code, und
+        bastle nebenbei an Medien — Video, Audio, 3D, was eben hängen bleibt.
+        Abseits des Bildschirms helfe ich Leuten bei Problemen mit Windows
+        und Linux — remote oder vor Ort.`,
       storeAria: 'Zum Store gehen',
       storeText: 'Zum<br>Store',
     },
     toolkit: {
       eyebrow: 'Werkzeuge',
       headline: 'Womit ich arbeite',
-      hint: 'Tippe auf ein Tool, damit es aufleuchtet.',
+      hint: 'Fahre über ein Tool oder tippe drauf, um zu sehen, wofür es ist.',
+      infoDefault: 'Fahre über ein Tool oder tippe drauf, um zu erfahren, wofür es ist.',
+      tools: {
+        vscode: 'Mein täglicher Begleiter — kombiniert mit KI, damit ich schnell vibe-coden kann, ohne den Überblick zu verlieren.',
+        docker: 'Docker hält meine Umgebungen sauber und portabel, n8n übernimmt die Automatisierungen, die ich nicht von Hand machen will.',
+        blender: 'Für 3D-Modellierung, Animation und das gelegentliche Rendering, das meinen Abend frisst.',
+        kdenlive: 'Hier schneide und poliere ich Videomaterial.',
+        obs: 'Für Bildschirmaufnahmen und Streaming.',
+        audacity: 'Zum Bereinigen und Bearbeiten von Audio.',
+        gimp: 'Meine erste Wahl für Bildbearbeitung, wenn ein kostenloser Photoshop-Ersatz gebraucht wird.',
+      },
     },
     support: {
       eyebrow: 'Support',
       headline: 'Support, wo auch immer du bist',
-      text: `Remote oder vor Ort helfe ich bei Einrichtung, Fehlerbehebung und
-        alltäglichen Technikproblemen — auf Windows und Linux, auf Arabisch, Englisch oder Deutsch.`,
+      text: `Ob remote oder persönlich — ich helfe dir bei Einrichtungsproblemen,
+        spüre die kniffligen Bugs auf und kümmere mich um alltägliche
+        Technikprobleme — auf Windows oder Linux, auf Arabisch, Englisch oder Deutsch.`,
       you: 'DU',
       platforms: 'Plattformen',
       languages: 'Sprachen',
@@ -78,7 +101,7 @@ const TRANSLATIONS = {
       eyebrow: 'Erstellen',
       headline: 'Websites, Apps, Tools & SaaS',
       text: `Ich entwerfe und baue Websites, Apps, kleine Tools und SaaS-Produkte —
-        mit KI-gestützten „Vibe-Coding"-Workflows, um schnell und trotzdem sauber zu arbeiten.`,
+        mit KI-gestütztem Vibe-Coding, um schnell und trotzdem sauber zu arbeiten.`,
       step1: 'Entwerfen',
       step2: 'Bauen',
       step3: 'Liefern',
@@ -117,6 +140,10 @@ function applyLanguage(lang) {
 
   const langToggle = document.getElementById('lang-toggle');
   if (langToggle) langToggle.textContent = getTranslation(lang, 'lang.toggle');
+
+  const activeTag = document.querySelector('.tag.is-active');
+  const toolInfo = document.getElementById('tool-info');
+  if (activeTag && toolInfo) toolInfo.textContent = activeTag.getAttribute('data-info');
 
   updateButtonText(html.classList.contains('dark-mode'));
 }
@@ -261,10 +288,40 @@ function initTilt() {
   });
 }
 
-/* ── Toolkit tag toggle ── */
+/* ── Toolkit tag info ── */
 function initToolTags() {
-  document.querySelectorAll('.tag').forEach((tag) => {
-    tag.addEventListener('click', () => tag.classList.toggle('is-active'));
+  const tags = document.querySelectorAll('.tag');
+  const info = document.getElementById('tool-info');
+  if (!tags.length || !info) return;
+
+  let activeTag = null;
+
+  function showInfo(tag) {
+    const text = tag ? tag.getAttribute('data-info') : null;
+    const lang = document.documentElement.lang === 'de' ? 'de' : 'en';
+    info.textContent = text || getTranslation(lang, 'toolkit.infoDefault');
+  }
+
+  function restoreInfo() {
+    showInfo(activeTag);
+  }
+
+  tags.forEach((tag) => {
+    tag.addEventListener('mouseenter', () => showInfo(tag));
+    tag.addEventListener('mouseleave', restoreInfo);
+    tag.addEventListener('focus', () => showInfo(tag));
+    tag.addEventListener('blur', restoreInfo);
+    tag.addEventListener('click', () => {
+      if (activeTag === tag) {
+        activeTag = null;
+        tag.classList.remove('is-active');
+      } else {
+        if (activeTag) activeTag.classList.remove('is-active');
+        activeTag = tag;
+        tag.classList.add('is-active');
+      }
+      showInfo(activeTag);
+    });
   });
 }
 
