@@ -14,6 +14,11 @@
   <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@500;600;700;800&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet"/>
   <link rel="stylesheet" href="style.css">
   <link rel="icon" type="image/svg+xml" href="favicon.svg">
+  <!-- Runs immediately, before the page renders, so dark mode can be applied
+       before the first paint (avoids a "flash" of the light theme for
+       returning dark-mode visitors). Priority: a saved choice in localStorage
+       wins; otherwise fall back to the OS-level dark mode preference. Wrapped
+       in try/catch because localStorage can throw in some private-browsing modes. -->
   <script>
     (function () {
       try {
@@ -28,10 +33,14 @@
 </head>
 <body>
 
+  <!-- Animated background: script.js draws a drifting particle network onto this. -->
   <canvas id="bg-canvas" aria-hidden="true"></canvas>
+  <!-- Thin bar at the very top that fills in as the visitor scrolls down the page. -->
   <div class="scroll-progress" aria-hidden="true"><span class="scroll-progress-bar"></span></div>
 
-  <!-- NAV -->
+  <!-- NAV: floating pill nav bar. data-i18n / data-i18n-attr attributes mark text
+       that script.js's translation system (TRANSLATIONS in script.js) fills in
+       for the currently selected language. -->
   <nav>
     <a href="#identity" class="nav-logo" aria-label="Back to top" data-i18n-attr="aria-label:nav.logoAria">AK</a>
     <div class="nav-links">
@@ -40,11 +49,14 @@
       <a href="#build" class="nav-link" data-i18n="nav.build">Build</a>
     </div>
     <div class="nav-sep"></div>
+    <!-- Shows the language you'd switch TO ("DE" while browsing in English, "EN"
+         while browsing in German). Click handler lives in script.js (initLanguage). -->
     <button type="button" class="lang-toggle" id="lang-toggle" aria-label="Switch language">🌐 DE</button>
+    <!-- Click handler and label text are managed by script.js (toggleDarkMode). -->
     <button class="dark-mode-toggle" aria-pressed="false">🌙 Dark</button>
   </nav>
 
-  <!-- HERO -->
+  <!-- HERO: the top intro section with name, short bio, and photo. -->
   <section id="identity" class="hero">
     <div class="hero-text">
       <p class="hero-eyebrow"><span class="pulse-dot"></span><span data-i18n="hero.eyebrow">Hi, I'm</span></p>
@@ -64,12 +76,17 @@
       </div>
     </div>
     <div class="hero-photo-wrap">
+      <!-- Purely decorative spinning ring behind the photo. -->
       <div class="photo-ring" aria-hidden="true"></div>
+      <!-- "tilt-el" makes this photo tilt toward the cursor via script.js's initTilt(). -->
       <img src="img.jpg" alt="Ali Kenjo" class="hero-photo-circle tilt-el">
     </div>
   </section>
 
-  <!-- TOOLKIT -->
+  <!-- TOOLKIT: card listing the tools/software used day to day. Each tag button
+       below stores its hover/click description in data-info (filled in per
+       language via data-i18n-attr), which script.js's initToolTags() shows in
+       the #tool-info line underneath. "reveal" means this card fades in on scroll. -->
   <section id="toolkit" class="content-section content-section--1 reveal">
     <p class="section-eyebrow section-eyebrow--1"><span class="node-dot"></span><span data-i18n="toolkit.eyebrow">Toolkit</span></p>
     <h2 class="section-headline" data-i18n="toolkit.headline">What I work with</h2>
@@ -83,10 +100,13 @@
       <button type="button" class="tag" data-i18n-attr="data-info:toolkit.tools.audacity">🎧 Audacity</button>
       <button type="button" class="tag" data-i18n-attr="data-info:toolkit.tools.gimp">🎨 GIMP</button>
     </div>
+    <!-- Text here gets replaced by script.js with either the default hint or the
+         description of whichever tag is hovered/pinned. -->
     <p class="tool-info" id="tool-info" data-i18n="toolkit.infoDefault">Hover or tap a tool above to find out what it's for.</p>
   </section>
 
-  <!-- SUPPORT -->
+  <!-- SUPPORT: card describing remote/in-person tech support, illustrated with
+       two small "orbit" diagrams (platforms and languages) built from inline SVG. -->
   <section id="support" class="content-section content-section--2 reveal">
     <p class="section-eyebrow section-eyebrow--2"><span class="node-dot"></span><span data-i18n="support.eyebrow">Support</span></p>
     <h2 class="section-headline" data-i18n="support.headline">Support, wherever you are</h2>
@@ -96,6 +116,8 @@
       in Arabic, English, or German.
     </p>
     <div class="orbit-group">
+      <!-- Diagram 1: "YOU" at the center connected to WIN and LNX — the platforms
+           supported (Windows and Linux). Purely decorative, hence aria-hidden. -->
       <div class="orbit-item">
         <div class="orbit-wrap">
           <svg viewBox="0 0 220 220" width="220" height="220" aria-hidden="true">
@@ -116,6 +138,8 @@
         </div>
         <p class="section-note" data-i18n="support.platforms">Platforms</p>
       </div>
+      <!-- Diagram 2: "YOU" at the center connected to EN, DE, AR — the languages
+           support is offered in (English, German, Arabic). -->
       <div class="orbit-item">
         <div class="orbit-wrap">
           <svg viewBox="0 0 220 220" width="220" height="220" aria-hidden="true">
@@ -144,7 +168,9 @@
     </div>
   </section>
 
-  <!-- BUILD -->
+  <!-- BUILD: card describing the web/app/SaaS building work, with a 3-step
+       "Design → Build → Ship" process tracker whose connecting line animates in
+       once the card scrolls into view (see .process-track::after in style.css). -->
   <section id="build" class="content-section content-section--3 reveal">
     <p class="section-eyebrow section-eyebrow--3"><span class="node-dot"></span><span data-i18n="build.eyebrow">Build</span></p>
     <h2 class="section-headline" data-i18n="build.headline">Websites, apps, tools &amp; SaaS</h2>
@@ -168,12 +194,14 @@
     </div>
   </section>
 
-  <!-- FOOTER -->
+  <!-- FOOTER: copyright note plus a small pulsing "status" line. -->
   <footer class="reveal">
     <span>© 2026 Ali Kenjo</span>
     <span class="footer-status"><span class="pulse-dot"></span><span data-i18n="footer.status">IT · Web · Media — Germany</span></span>
   </footer>
 
+  <!-- All interactive behavior (language switching, dark mode, scroll effects,
+       hover animations, the toolkit tags, and the animated background) lives here. -->
   <script src="script.js"></script>
 </body>
 </html>

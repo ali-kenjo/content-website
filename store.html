@@ -7,6 +7,8 @@
   <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@500;600;700;800&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet"/>
   <link rel="stylesheet" href="style.css">
   <link rel="icon" type="image/svg+xml" href="favicon.svg">
+  <!-- Same early dark-mode check as index.html: applies the saved/OS-preferred
+       theme before the page paints, so there's no flash of the wrong theme. -->
   <script>
     (function () {
       try {
@@ -18,6 +20,10 @@
       } catch (e) {}
     })();
   </script>
+  <!-- Page-specific styles just for the store layout (not shared across the
+       site, so they live here instead of in style.css). Colors are still pulled
+       from the shared CSS variables defined in style.css, so this page stays
+       in sync with the site's theme and dark mode. -->
   <style>
     .store-content {
       min-height: 100vh;
@@ -140,10 +146,14 @@
 </head>
 <body>
 
+  <!-- Same animated background and scroll-progress bar as index.html; both are
+       driven by the shared script.js. -->
   <canvas id="bg-canvas" aria-hidden="true"></canvas>
   <div class="scroll-progress" aria-hidden="true"><span class="scroll-progress-bar"></span></div>
 
-  <!-- NAV -->
+  <!-- NAV: simplified version of the main nav — just a way back home, since this
+       page has no sections of its own to jump between. Note: no language toggle
+       here, so this page doesn't get translated by script.js's i18n system. -->
   <nav>
     <a href="index.html" class="nav-logo" aria-label="Back home">AK</a>
     <div class="nav-sep"></div>
@@ -151,7 +161,8 @@
     <button class="dark-mode-toggle" aria-pressed="false">🌙 Dark</button>
   </nav>
 
-  <!-- STORE CONTENT -->
+  <!-- STORE CONTENT: currently a placeholder page with one real offer (a free
+       PDF download) while more products are being built. -->
   <section class="store-content reveal">
     <h1>Store</h1>
     <p>Welcome to the store. This page is under construction and will feature AI-created tools, resources, and products coming soon.</p>
@@ -159,6 +170,9 @@
     <div class="offer-card">
       <h2>Free PDF Download</h2>
       <p>Download a free PDF containing 116 content ideas you can use as inspiration. These are raw ideas only, so the file is a collection of concepts ready for your own creative execution.</p>
+      <!-- "magnetic" makes this button follow the cursor slightly on hover
+           (see initMagnetic in script.js). "download" tells the browser to save
+           the PDF instead of navigating to it. -->
       <a href="store-files/content-ideas/video_ideas.pdf" class="download-btn magnetic" download>Download PDF for Free</a>
     </div>
 

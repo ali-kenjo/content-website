@@ -1,6 +1,13 @@
+// True if the visitor's OS/browser is set to reduce motion. When true, we skip
+// animations (parallax, tilt, magnetic hover, etc.) so the page stays calm for people
+// who get dizzy or distracted by movement.
 const REDUCED_MOTION = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
 
-/* ── i18n ── */
+/* ── i18n ──
+   Simple hand-rolled translation system (no external library).
+   TRANSLATIONS holds one object per language, and the HTML marks translatable
+   spots with data-i18n / data-i18n-html / data-i18n-attr attributes that point
+   at a dotted key path here (e.g. "hero.bio" -> TRANSLATIONS.en.hero.bio). */
 const TRANSLATIONS = {
   en: {
     nav: { logoAria: 'Back to top', toolkit: 'Toolkit', support: 'Support', build: 'Build' },
@@ -113,23 +120,33 @@ const TRANSLATIONS = {
   },
 };
 
+// Looks up a translated string by dotted path, e.g. getTranslation('en', 'hero.bio').
+// Walks the TRANSLATIONS object one key segment at a time; returns undefined if any
+// segment along the way doesn't exist, instead of throwing.
 function getTranslation(lang, key) {
   return key.split('.').reduce((obj, part) => (obj ? obj[part] : undefined), TRANSLATIONS[lang]);
 }
 
+// Switches the whole page to the given language ('en' or 'de') by re-reading every
+// translatable element and writing in the matching string. Called once on page load
+// and again every time the user clicks the language toggle.
 function applyLanguage(lang) {
   document.documentElement.lang = lang;
 
+  // Plain text content, e.g. <span data-i18n="nav.toolkit">
   document.querySelectorAll('[data-i18n]').forEach((el) => {
     const value = getTranslation(lang, el.getAttribute('data-i18n'));
     if (value !== undefined) el.textContent = value;
   });
 
+  // Text that is allowed to contain HTML (like the "Visit<br>Store" button label).
   document.querySelectorAll('[data-i18n-html]').forEach((el) => {
     const value = getTranslation(lang, el.getAttribute('data-i18n-html'));
     if (value !== undefined) el.innerHTML = value;
   });
 
+  // Attribute values, e.g. data-i18n-attr="aria-label:hero.storeAria" or a
+  // comma-separated list of "attr:key" pairs for elements needing more than one.
   document.querySelectorAll('[data-i18n-attr]').forEach((el) => {
     el.getAttribute('data-i18n-attr').split(',').forEach((pair) => {
       const [attr, key] = pair.split(':').map((s) => s.trim());
@@ -138,21 +155,29 @@ function applyLanguage(lang) {
     });
   });
 
+  // The little "🌐 DE/EN" button shows the language you'd switch TO, not the current one.
   const langToggle = document.getElementById('lang-toggle');
   if (langToggle) langToggle.textContent = getTranslation(lang, 'lang.toggle');
 
+  // If a toolkit tag is currently selected, refresh its info text in the new language too.
   const activeTag = document.querySelector('.tag.is-active');
   const toolInfo = document.getElementById('tool-info');
   if (activeTag && toolInfo) toolInfo.textContent = activeTag.getAttribute('data-info');
 
+  // The dark-mode button label ("Dark"/"Light") is also translated, so refresh it here.
   updateButtonText(html.classList.contains('dark-mode'));
 }
 
+// Sets up the language feature on page load: restores the visitor's last-picked
+// language from localStorage (falls back to English), applies it, and wires up
+// the toggle button to flip between English and German.
 function initLanguage() {
   let lang = 'en';
   try {
     lang = localStorage.getItem('lang') || 'en';
-  } catch (e) {}
+  } catch (e) {
+    // localStorage can be unavailable (e.g. private browsing) — just keep the default.
+  }
   applyLanguage(lang);
 
   const langToggle = document.getElementById('lang-toggle');
@@ -161,20 +186,31 @@ function initLanguage() {
       const next = document.documentElement.lang === 'de' ? 'en' : 'de';
       try {
         localStorage.setItem('lang', next);
-      } catch (e) {}
+      } catch (e) {
+        // If we can't save the preference, the page still works — it just won't be
+        // remembered on the next visit.
+      }
       applyLanguage(next);
     });
   }
 }
 
-/* ── Dark mode ── */
+/* ── Dark mode ──
+   Note: the very first switch to dark mode (based on saved preference or the OS
+   setting) happens in an inline <script> in the <head>, before the page paints,
+   so there's no flash of the wrong theme. Everything below just keeps the toggle
+   button and future clicks in sync with that. */
 const darkModeToggle = document.querySelector('.dark-mode-toggle');
 const html = document.documentElement;
 
+// Makes sure the toggle button's label matches whatever mode the page already
+// loaded in (set by the inline script in <head>).
 function initDarkMode() {
   updateButtonText(html.classList.contains('dark-mode'));
 }
 
+// Flips the dark-mode class on <html>, remembers the choice for next time, and
+// updates the button label to match.
 function toggleDarkMode() {
   html.classList.toggle('dark-mode');
   const isDarkMode = html.classList.contains('dark-mode');
@@ -182,6 +218,8 @@ function toggleDarkMode() {
   updateButtonText(isDarkMode);
 }
 
+// Sets the dark-mode button's text ("🌙 Dark" / "☀️ Light") and its aria-pressed
+// state, in whichever language is currently active.
 function updateButtonText(isDarkMode) {
   if (darkModeToggle) {
     const lang = document.documentElement.lang === 'de' ? 'de' : 'en';
@@ -194,29 +232,38 @@ if (darkModeToggle) {
   darkModeToggle.addEventListener('click', toggleDarkMode);
 }
 
-/* ── Scroll progress bar ── */
+/* ── Scroll progress bar ──
+   Fills the thin bar fixed to the top of the page as the visitor scrolls down,
+   so they get a quick visual sense of how far through the page they are. */
 function initScrollProgress() {
   const bar = document.querySelector('.scroll-progress-bar');
   if (!bar) return;
   const update = () => {
     const scrollTop = window.scrollY;
+    // Total scrollable distance = full page height minus one viewport height.
     const height = document.documentElement.scrollHeight - window.innerHeight;
     const pct = height > 0 ? (scrollTop / height) * 100 : 0;
     bar.style.width = pct + '%';
   };
   window.addEventListener('scroll', update, { passive: true });
-  update();
+  update(); // run once immediately, in case the page loads already scrolled
 }
 
-/* ── Scroll-spy nav ── */
+/* ── Scroll-spy nav ──
+   Watches which page section is currently in view and highlights the matching
+   nav link, so the nav bar always shows the visitor "you are here". */
 function initScrollSpy() {
   const links = Array.from(document.querySelectorAll('.nav-link'));
   if (!links.length) return;
+  // Each nav link's href (e.g. "#toolkit") points at the section it should highlight.
   const sections = links
     .map((link) => document.querySelector(link.getAttribute('href')))
     .filter(Boolean);
   if (!sections.length) return;
 
+  // IntersectionObserver fires whenever a watched section crosses the given
+  // rootMargin band — here, a horizontal strip roughly through the middle of the
+  // viewport — which we treat as "this section is the one currently being read".
   const io = new IntersectionObserver(
     (entries) => {
       entries.forEach((entry) => {
@@ -231,11 +278,15 @@ function initScrollSpy() {
   sections.forEach((s) => io.observe(s));
 }
 
-/* ── Reveal on scroll ── */
+/* ── Reveal on scroll ──
+   Fades/slides each ".reveal" element (section cards, footer) into view the first
+   time it scrolls into the viewport, giving the page a bit of life without
+   requiring the visitor to do anything. */
 function initReveal() {
   const els = document.querySelectorAll('.reveal');
   if (!els.length) return;
 
+  // Respect the visitor's reduced-motion preference: just show everything as-is.
   if (REDUCED_MOTION) {
     els.forEach((el) => el.classList.add('is-visible'));
     return;
@@ -246,71 +297,93 @@ function initReveal() {
       entries.forEach((entry) => {
         if (entry.isIntersecting) {
           entry.target.classList.add('is-visible');
-          io.unobserve(entry.target);
+          io.unobserve(entry.target); // only reveal once, then stop watching it
         }
       });
     },
-    { threshold: 0.15 }
+    { threshold: 0.15 } // trigger once 15% of the element is visible
   );
   els.forEach((el) => io.observe(el));
 }
 
-/* ── Magnetic hover ── */
+/* ── Magnetic hover ──
+   Makes buttons marked ".magnetic" gently follow the cursor as it hovers nearby,
+   like they're being pulled toward it — a small playful touch used on the
+   round "Visit Store" button and the download/back buttons. */
 function initMagnetic() {
   if (REDUCED_MOTION) return;
   document.querySelectorAll('.magnetic').forEach((el) => {
     el.addEventListener('mousemove', (e) => {
       const rect = el.getBoundingClientRect();
+      // Offset of the cursor from the button's center point.
       const x = e.clientX - rect.left - rect.width / 2;
       const y = e.clientY - rect.top - rect.height / 2;
+      // Move the button a fraction of that offset (0.28x) so it "chases" the cursor
+      // without actually snapping to it.
       el.style.transform = `translate(${x * 0.28}px, ${y * 0.28}px)`;
     });
     el.addEventListener('mouseleave', () => {
-      el.style.transform = '';
+      el.style.transform = ''; // snap back to its resting position
     });
   });
 }
 
-/* ── Tilt (hero photo) ── */
+/* ── Tilt (hero photo) ──
+   Gives the profile photo a subtle 3D tilt that follows the cursor, based on
+   where the pointer is within its wrapping element. */
 function initTilt() {
   if (REDUCED_MOTION) return;
   document.querySelectorAll('.tilt-el').forEach((el) => {
     const wrap = el.parentElement;
     wrap.addEventListener('mousemove', (e) => {
       const rect = wrap.getBoundingClientRect();
+      // Cursor position within the wrapper, normalized to a -0.5..0.5 range
+      // (0 = centered, negative = left/top, positive = right/bottom).
       const x = (e.clientX - rect.left) / rect.width - 0.5;
       const y = (e.clientY - rect.top) / rect.height - 0.5;
       el.style.transform = `rotateY(${x * 16}deg) rotateX(${-y * 16}deg)`;
     });
     wrap.addEventListener('mouseleave', () => {
-      el.style.transform = '';
+      el.style.transform = ''; // tilt back to flat
     });
   });
 }
 
-/* ── Toolkit tag info ── */
+/* ── Toolkit tag info ──
+   Powers the "hover or tap a tool to see what it's for" row: shows a short
+   description under the tags on hover/focus, and lets one tag stay "selected"
+   (its description stays visible) after a click/tap. */
 function initToolTags() {
   const tags = document.querySelectorAll('.tag');
   const info = document.getElementById('tool-info');
   if (!tags.length || !info) return;
 
+  // activeTag tracks the "pinned" tag from a click/tap — its info stays shown
+  // even after the mouse moves away, until the same tag is clicked again.
   let activeTag = null;
 
+  // Puts a tag's description into the info line below the tag cloud, falling
+  // back to the default hint text if no tag is being shown.
   function showInfo(tag) {
     const text = tag ? tag.getAttribute('data-info') : null;
     const lang = document.documentElement.lang === 'de' ? 'de' : 'en';
     info.textContent = text || getTranslation(lang, 'toolkit.infoDefault');
   }
 
+  // Goes back to showing whichever tag is currently pinned (or the default hint
+  // if none is pinned) — used when the mouse/focus leaves a tag.
   function restoreInfo() {
     showInfo(activeTag);
   }
 
   tags.forEach((tag) => {
+    // Hover/keyboard-focus previews the description without "pinning" it.
     tag.addEventListener('mouseenter', () => showInfo(tag));
     tag.addEventListener('mouseleave', restoreInfo);
     tag.addEventListener('focus', () => showInfo(tag));
     tag.addEventListener('blur', restoreInfo);
+    // Click/tap toggles pinning: clicking the already-pinned tag unpins it,
+    // clicking a different tag moves the pin there.
     tag.addEventListener('click', () => {
       if (activeTag === tag) {
         activeTag = null;
@@ -325,16 +398,24 @@ function initToolTags() {
   });
 }
 
-/* ── Interactive background: drifting node network ── */
+/* ── Interactive background: drifting node network ──
+   Draws the animated "constellation" backdrop on the full-page <canvas>: a bunch
+   of small dots slowly drift around, get pulled toward the mouse when it's
+   nearby, and lines are drawn between dots that are close enough to each other —
+   giving a network/particle-field look. Pauses when the tab isn't visible to
+   save battery/CPU, and skips the animation loop entirely if the visitor prefers
+   reduced motion (drawing one static frame instead). */
 function initBackgroundMotion() {
   const canvas = document.getElementById('bg-canvas');
   if (!canvas || !canvas.getContext) return;
   const ctx = canvas.getContext('2d');
 
-  let dpr = 1;
-  let points = [];
-  const mouse = { x: null, y: null };
+  let dpr = 1; // device pixel ratio, for crisp rendering on high-DPI screens
+  let points = []; // the drifting dots
+  const mouse = { x: null, y: null }; // null when the pointer is off-screen
 
+  // Reads the current theme's accent colors straight from CSS custom properties,
+  // so the dots automatically match light/dark mode without duplicating colors here.
   function palette() {
     const styles = getComputedStyle(document.documentElement);
     return [
@@ -344,34 +425,43 @@ function initBackgroundMotion() {
     ];
   }
 
+  // Creates a fresh set of randomly placed, randomly drifting dots. The count
+  // scales with screen area (more space = more dots), clamped between 24 and 90
+  // so it stays light on both small and huge screens.
   function spawnPoints() {
     const area = window.innerWidth * window.innerHeight;
     const count = Math.min(90, Math.max(24, Math.round(area / 22000)));
     points = Array.from({ length: count }, () => ({
       x: Math.random() * window.innerWidth,
       y: Math.random() * window.innerHeight,
-      vx: (Math.random() - 0.5) * 0.22,
-      vy: (Math.random() - 0.5) * 0.22,
-      r: Math.random() * 1.5 + 1,
-      colorIndex: Math.floor(Math.random() * 3),
+      vx: (Math.random() - 0.5) * 0.22, // slow, slight horizontal drift
+      vy: (Math.random() - 0.5) * 0.22, // slow, slight vertical drift
+      r: Math.random() * 1.5 + 1, // dot radius
+      colorIndex: Math.floor(Math.random() * 3), // which accent color this dot uses
     }));
   }
 
+  // Resizes the canvas to match the window and current pixel density, then
+  // reseeds the dots (their old positions wouldn't make sense at a new size).
   function resize() {
-    dpr = Math.min(window.devicePixelRatio || 1, 2);
+    dpr = Math.min(window.devicePixelRatio || 1, 2); // cap at 2x to limit cost on very dense screens
     canvas.width = window.innerWidth * dpr;
     canvas.height = window.innerHeight * dpr;
     canvas.style.width = window.innerWidth + 'px';
     canvas.style.height = window.innerHeight + 'px';
-    ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
+    ctx.setTransform(dpr, 0, 0, dpr, 0, 0); // draw in CSS pixels, browser scales up for us
     spawnPoints();
   }
 
+  // Draws one frame. When `animate` is true, dots are first moved (including
+  // being nudged away from the mouse and wrapped around screen edges) before
+  // being drawn; when false, it just renders the dots at their current spot
+  // (used for the single static frame under reduced motion).
   function draw(animate) {
     const w = window.innerWidth;
     const h = window.innerHeight;
     const colors = palette();
-    const linkDist = 130;
+    const linkDist = 130; // max distance (px) at which two dots get a connecting line
 
     ctx.clearRect(0, 0, w, h);
 
@@ -380,17 +470,21 @@ function initBackgroundMotion() {
         p.x += p.vx;
         p.y += p.vy;
 
+        // Push dots away from the cursor when it's close, creating a ripple
+        // effect as the visitor moves their mouse through the field.
         if (mouse.x !== null) {
           const dx = p.x - mouse.x;
           const dy = p.y - mouse.y;
-          const dist = Math.hypot(dx, dy) || 1;
+          const dist = Math.hypot(dx, dy) || 1; // avoid divide-by-zero if dist is 0
           if (dist < 140) {
-            const force = (140 - dist) / 140;
+            const force = (140 - dist) / 140; // closer to mouse = stronger push
             p.x += (dx / dist) * force * 1.7;
             p.y += (dy / dist) * force * 1.7;
           }
         }
 
+        // Wrap dots around the edges instead of letting them fly off-screen,
+        // so the field always looks evenly populated.
         if (p.x < -20) p.x = w + 20;
         if (p.x > w + 20) p.x = -20;
         if (p.y < -20) p.y = h + 20;
@@ -398,6 +492,8 @@ function initBackgroundMotion() {
       }
     }
 
+    // Draw a faint line between every pair of dots that are close enough,
+    // fading out as they get farther apart (up to linkDist).
     for (let i = 0; i < points.length; i++) {
       for (let j = i + 1; j < points.length; j++) {
         const a = points[i];
@@ -415,6 +511,7 @@ function initBackgroundMotion() {
       }
     }
 
+    // Draw the dots themselves on top of the lines.
     ctx.globalAlpha = 0.5;
     for (const p of points) {
       ctx.fillStyle = colors[p.colorIndex];
@@ -425,7 +522,7 @@ function initBackgroundMotion() {
     ctx.globalAlpha = 1;
   }
 
-  let raf = null;
+  let raf = null; // handle for the current requestAnimationFrame call, so it can be cancelled
   function loop() {
     draw(true);
     raf = requestAnimationFrame(loop);
@@ -434,6 +531,7 @@ function initBackgroundMotion() {
   resize();
   window.addEventListener('resize', resize);
 
+  // Reduced-motion visitors get one still frame and no animation loop at all.
   if (REDUCED_MOTION) {
     draw(false);
     return;
@@ -448,6 +546,8 @@ function initBackgroundMotion() {
     mouse.y = null;
   });
 
+  // Stop animating when the tab is in the background (saves CPU/battery), and
+  // pick the loop back up when the visitor returns to the tab.
   document.addEventListener('visibilitychange', () => {
     if (document.hidden) {
       cancelAnimationFrame(raf);
@@ -459,6 +559,9 @@ function initBackgroundMotion() {
   loop();
 }
 
+// Kick everything off once the HTML is fully parsed. Each init function is
+// independent and safe to call even if its target elements aren't on the
+// current page (e.g. store.html doesn't have a toolkit tag cloud).
 document.addEventListener('DOMContentLoaded', () => {
   initLanguage();
   initDarkMode();

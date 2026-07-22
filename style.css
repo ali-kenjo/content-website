@@ -1,12 +1,17 @@
+/* Reset browser default spacing and make width/height calculations include
+   padding and border, so layout math stays predictable everywhere below. */
 *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
 
+/* All colors, fonts, radii, etc. live here as CSS custom properties (variables),
+   so the whole site's look can be tuned from one place, and dark mode (below)
+   can override just the colors without touching any other rule. */
 :root {
-  /* Warm Signal — light */
-  --bg: #faf8f5;
-  --surface: #ffffff;
-  --border: #e7e2d9;
-  --text-primary: #1c1917;
-  --text-secondary: #78716c;
+  /* Warm Signal — light theme palette */
+  --bg: #faf8f5;             /* page background */
+  --surface: #ffffff;        /* cards, nav bar, footer background */
+  --border: #e7e2d9;         /* hairline borders and dividers */
+  --text-primary: #1c1917;   /* main body text */
+  --text-secondary: #78716c; /* de-emphasized text (hints, captions) */
 
   --accent: #f97316;       /* primary CTA */
   --on-accent: #431407;    /* text on --accent, darkened from the spec's #FFF7ED — see note */
@@ -15,21 +20,28 @@
 
   --gradient: linear-gradient(120deg, var(--accent) 0%, var(--accent-2) 100%);
 
-  --shadow: rgba(28, 25, 23, 0.08);
-  --shadow-strong: rgba(28, 25, 23, 0.16);
+  --shadow: rgba(28, 25, 23, 0.08);        /* soft resting drop-shadow */
+  --shadow-strong: rgba(28, 25, 23, 0.16); /* deeper shadow used on hover */
 
+  /* Corner rounding, reused everywhere to keep the rounded-card look consistent. */
   --radius-lg: 28px;
   --radius-md: 18px;
   --radius-sm: 10px;
 
-  --font-body: 'Inter', system-ui, sans-serif;
-  --font-display: 'Outfit', 'Inter', system-ui, sans-serif;
+  --font-body: 'Inter', system-ui, sans-serif;       /* body copy, buttons, labels */
+  --font-display: 'Outfit', 'Inter', system-ui, sans-serif; /* headings, name, numbers */
 
+  /* A slight overshoot easing curve, used on hover/press animations for a
+     springy, "bouncy" feel instead of a flat linear motion. */
   --ease-bounce: cubic-bezier(0.34, 1.56, 0.64, 1);
 }
 
+/* Dark-mode override: redefines the same variable names with dark-theme colors.
+   Because every rule below reads colors through var(--...), simply toggling the
+   "dark-mode" class on <html> (done in script.js) re-themes the entire page —
+   no separate dark-mode rules needed elsewhere. */
 html.dark-mode {
-  /* Warm Signal — dark */
+  /* Warm Signal — dark theme palette */
   --bg: #0f1115;
   --surface: #191b20;
   --border: #27272a;
@@ -45,6 +57,7 @@ html.dark-mode {
   --shadow-strong: rgba(0, 0, 0, 0.6);
 }
 
+/* Smooth-scrolls to in-page anchors (e.g. clicking a nav link that jumps to #toolkit). */
 html { scroll-behavior: smooth; }
 
 body {
@@ -59,6 +72,9 @@ body {
   transition: background 0.3s, color 0.3s;
 }
 
+/* Faint colored glows fixed behind everything else, positioned in three corners
+   of the viewport. Sits below the animated canvas (z-index -3 vs -2) so the
+   moving dots draw on top of this static color wash. */
 body::before {
   content: '';
   position: fixed;
@@ -71,6 +87,10 @@ body::before {
   pointer-events: none;
 }
 
+/* Full-screen canvas that script.js draws the animated "constellation" dot
+   network onto (see initBackgroundMotion). Sits behind all page content but in
+   front of the static glow above it. pointer-events: none so it never blocks
+   clicks on the real content. */
 #bg-canvas {
   position: fixed;
   inset: 0;
@@ -86,7 +106,9 @@ body::before {
 
 img { max-width: 100%; display: block; }
 
-/* ── SCROLL PROGRESS ── */
+/* ── SCROLL PROGRESS ──
+   Thin bar pinned to the very top of the page. Its width is set by script.js
+   (initScrollProgress) to match how far the visitor has scrolled. */
 .scroll-progress {
   position: fixed;
   top: 0;
@@ -100,12 +122,14 @@ img { max-width: 100%; display: block; }
 .scroll-progress-bar {
   display: block;
   height: 100%;
-  width: 0%;
+  width: 0%; /* grown by JS as the page scrolls */
   background: var(--gradient);
   transition: width 0.1s linear;
 }
 
-/* ── PULSE DOT ── */
+/* ── PULSE DOT ──
+   Small dot used next to "Hi, I'm" and the footer status line, with an
+   expanding-ring animation to suggest an "online / live" indicator. */
 .pulse-dot {
   width: 8px;
   height: 8px;
@@ -122,7 +146,10 @@ img { max-width: 100%; display: block; }
   100% { box-shadow: 0 0 0 0 transparent; }
 }
 
-/* ── NAV ── */
+/* ── NAV ──
+   The pill-shaped floating navigation bar fixed to the top-center of the page,
+   with a frosted-glass (backdrop-blur) background so page content is still
+   faintly visible behind it while scrolling. */
 nav {
   position: fixed;
   top: 1.25rem;
@@ -182,6 +209,8 @@ nav {
 
 .nav-link:hover { color: var(--text-primary); background: var(--border); }
 
+/* Applied by script.js's scroll-spy (initScrollSpy) to whichever nav link
+   corresponds to the section currently in view. */
 .nav-link.is-active {
   color: var(--accent);
   background: color-mix(in srgb, var(--accent) 12%, transparent);
@@ -211,6 +240,9 @@ nav {
 
 .lang-toggle:hover { color: var(--accent); background: var(--border); }
 
+/* Visible focus ring for keyboard navigation (Tab key), applied only when the
+   element is focused via keyboard/assistive tech (not mouse clicks), thanks to
+   :focus-visible. Important for accessibility. */
 nav a:focus-visible,
 .lang-toggle:focus-visible,
 .dark-mode-toggle:focus-visible,
@@ -241,7 +273,10 @@ nav a:focus-visible,
   background: var(--border);
 }
 
-/* ── HERO ── */
+/* ── HERO ──
+   The top-of-page intro section: name, short bio, and photo side by side on
+   wide screens, stacking vertically on mobile (see the responsive block near
+   the bottom of this file). */
 .hero {
   position: relative;
   min-height: 100vh;
@@ -310,6 +345,8 @@ nav a:focus-visible,
   box-shadow: 0 8px 18px color-mix(in srgb, var(--chip-color) 30%, transparent);
 }
 
+/* Each chip picks its own accent color by setting the --chip-color variable
+   that .chip's own rules read from — one shared style, three different colors. */
 .chip--1 { --chip-color: var(--accent); }
 .chip--2 { --chip-color: var(--accent-hover); }
 .chip--3 { --chip-color: var(--accent-2); }
@@ -333,6 +370,8 @@ nav a:focus-visible,
   perspective: 900px;
 }
 
+/* Slowly-spinning dashed ring drawn behind/around the profile photo, purely
+   decorative (pointer-events: none so it can't be clicked/interfered with). */
 .photo-ring {
   position: absolute;
   width: min(68vw, 400px);
@@ -343,6 +382,8 @@ nav a:focus-visible,
   pointer-events: none;
 }
 
+/* Two small glowing dots riding on the ring (one at the top, one at the
+   bottom via ::after below) that spin along with it via the parent's animation. */
 .photo-ring::before,
 .photo-ring::after {
   content: '';
@@ -367,6 +408,9 @@ nav a:focus-visible,
   to { transform: rotate(360deg); }
 }
 
+/* The circular profile photo itself. It's also the ".tilt-el" that script.js's
+   initTilt() rotates on mousemove — transform-style/will-change here just make
+   sure that rotation renders smoothly as a real 3D transform. */
 .hero-photo-circle {
   position: relative;
   z-index: 1;
@@ -384,6 +428,8 @@ nav a:focus-visible,
   will-change: transform;
 }
 
+/* The round "Visit Store" button in the hero. It's also a ".magnetic" element,
+   so script.js's initMagnetic() nudges it toward the cursor on hover. */
 .store-btn-round {
   width: 112px;
   height: 112px;
@@ -410,7 +456,11 @@ nav a:focus-visible,
   box-shadow: 0 16px 40px color-mix(in srgb, var(--accent) 46%, transparent);
 }
 
-/* ── CONTENT SECTIONS (cards) ── */
+/* ── CONTENT SECTIONS (cards) ──
+   Shared card styling for the three main sections below the hero (Toolkit,
+   Support, Build). Each is a rounded white/dark "card" that lifts slightly
+   and deepens its shadow on hover. They're also ".reveal" elements, so they
+   start hidden and fade/slide in the first time they scroll into view. */
 .content-section {
   position: relative;
   max-width: 900px;
@@ -429,6 +479,8 @@ nav a:focus-visible,
   transform: translateY(-3px);
 }
 
+/* Small colored tab poking out of the top-left of each card, tinted per section
+   via the --section-accent variable set just below. */
 .content-section::before {
   content: '';
   position: absolute;
@@ -444,12 +496,15 @@ nav a:focus-visible,
 .content-section--2 { --section-accent: var(--accent-hover); }
 .content-section--3 { --section-accent: var(--accent-2); }
 
+/* Starting (hidden) state for anything script.js's initReveal() is watching:
+   invisible and shifted down slightly. */
 .reveal {
   opacity: 0;
   transform: translateY(28px);
   transition: opacity 0.7s ease, transform 0.7s ease;
 }
 
+/* Added by JS once the element has scrolled into view — fades/slides it into place. */
 .reveal.is-visible {
   opacity: 1;
   transform: translateY(0);
@@ -504,7 +559,10 @@ nav a:focus-visible,
   margin-bottom: 1.25rem;
 }
 
-/* ── TOOLKIT TAGS ── */
+/* ── TOOLKIT TAGS ──
+   The row of clickable pill buttons (VS Code, Docker, Blender, ...) in the
+   Toolkit section. script.js's initToolTags() shows each one's description on
+   hover/focus, and toggles the ".is-active" (pinned) state on click. */
 .tag-cloud {
   display: flex;
   flex-wrap: wrap;
@@ -537,6 +595,8 @@ nav a:focus-visible,
 
 .tag:active { transform: translateY(0) scale(0.96); }
 
+/* Applied by JS to whichever tag is currently "pinned" (clicked) — filled solid
+   instead of just outlined, so it's clear which description is showing. */
 .tag.is-active {
   --tag-color: var(--accent-hover);
   background: var(--accent-hover);
@@ -544,6 +604,9 @@ nav a:focus-visible,
   box-shadow: 0 8px 18px color-mix(in srgb, var(--accent-hover) 40%, transparent);
 }
 
+/* The description line under the tag cloud that script.js swaps text into.
+   min-height keeps the layout from jumping as the text length changes between
+   tools/languages. */
 .tool-info {
   margin-top: 1.25rem;
   min-height: 2.6em;
@@ -554,7 +617,10 @@ nav a:focus-visible,
   transition: color 0.2s ease;
 }
 
-/* ── ORBIT DIAGRAMS ── */
+/* ── ORBIT DIAGRAMS ──
+   Styling for the two small SVG diagrams in the Support section (inline SVG
+   markup lives in index.html) — a center "YOU" node with satellite nodes
+   (Windows/Linux, or English/German/Arabic) circling around it. */
 .orbit-wrap {
   display: flex;
   justify-content: center;
@@ -585,6 +651,7 @@ nav a:focus-visible,
   text-align: center;
 }
 
+/* The dashed circular orbit path, slowly spinning around its own center. */
 .orbit-sweep {
   fill: none;
   stroke-width: 1.2;
@@ -595,6 +662,8 @@ nav a:focus-visible,
   animation: spin 20s linear infinite;
 }
 
+/* The small satellite circles (WIN/LNX or EN/DE/AR) sitting on the orbit ring;
+   each grows slightly on hover for a bit of interactivity. */
 .orbit-node {
   transform-box: fill-box;
   transform-origin: center;
@@ -604,6 +673,8 @@ nav a:focus-visible,
 
 .orbit-node:hover { transform: scale(1.16); }
 
+/* The central "YOU" circle, gently pulsing to draw the eye to the center of
+   the diagram. */
 .orbit-center {
   transform-box: fill-box;
   transform-origin: center;
@@ -620,7 +691,10 @@ nav a:focus-visible,
   color: var(--text-secondary);
 }
 
-/* ── BUILD / PROCESS TRACK ── */
+/* ── BUILD / PROCESS TRACK ──
+   The "Design → Build → Ship" step tracker in the Build section: three numbered
+   circles connected by a line that visually "fills in" once the section has
+   scrolled into view. */
 .process-track {
   position: relative;
   display: flex;
@@ -630,6 +704,8 @@ nav a:focus-visible,
   padding-top: 0.5rem;
 }
 
+/* Plain gray line connecting all three step circles, drawn first as the "empty
+   track" that the colored progress line (::after) animates on top of. */
 .process-track::before {
   content: '';
   position: absolute;
@@ -640,6 +716,8 @@ nav a:focus-visible,
   background: var(--border);
 }
 
+/* Colored line that grows from 0 width to full width once the section becomes
+   visible (see the .is-visible rule below), giving the "steps connecting" animation. */
 .process-track::after {
   content: '';
   position: absolute;
@@ -651,6 +729,7 @@ nav a:focus-visible,
   transition: width 1.1s var(--ease-bounce) 0.2s;
 }
 
+/* .is-visible is added by script.js's initReveal() once this card scrolls into view. */
 .content-section.is-visible .process-track::after { width: calc(100% - 42px); }
 
 .process-step {
@@ -695,7 +774,9 @@ nav a:focus-visible,
 
 .process-step:hover .process-label { color: var(--text-primary); }
 
-/* ── FOOTER ── */
+/* ── FOOTER ──
+   Pill-shaped footer bar with the copyright note and a small "online status"
+   line (reuses .pulse-dot). It's also a ".reveal" element. */
 footer {
   max-width: 900px;
   margin: 1.75rem auto 3rem;
@@ -729,7 +810,11 @@ footer:hover { box-shadow: 0 20px 50px var(--shadow-strong); }
   vertical-align: middle;
 }
 
-/* ── RESPONSIVE ── */
+/* ── RESPONSIVE ──
+   Breakpoints for smaller screens. At 900px the nav's Toolkit/Support/Build
+   text links are hidden to save space (the logo, language, and dark-mode
+   buttons still work as navigation via scrolling/links). At 768px the layout
+   switches to a mobile-friendly single column. */
 @media (max-width: 900px) {
   .nav-links { display: none; }
 }
@@ -758,6 +843,11 @@ footer:hover { box-shadow: 0 20px 50px var(--shadow-strong); }
   footer { flex-direction: column; gap: 0.6rem; text-align: center; border-radius: var(--radius-lg); margin: 1.25rem 1rem 2rem; }
 }
 
+/* Backstop for visitors who prefer reduced motion: kills all CSS transitions
+   and animations, and forces reveal/process-track elements straight to their
+   "finished" state instead of an invisible or half-drawn one. Works alongside
+   the REDUCED_MOTION checks in script.js, which skip the JS-driven animations
+   (canvas background, tilt, magnetic hover) for the same visitors. */
 @media (prefers-reduced-motion: reduce) {
   * { transition: none !important; animation: none !important; }
   .reveal { opacity: 1 !important; transform: none !important; }
