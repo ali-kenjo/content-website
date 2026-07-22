@@ -1,5 +1,145 @@
 const REDUCED_MOTION = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
 
+/* ── i18n ── */
+const TRANSLATIONS = {
+  en: {
+    nav: { logoAria: 'Back to top', toolkit: 'Toolkit', support: 'Support', build: 'Build' },
+    lang: { toggle: '🌐 DE' },
+    dark: { dark: '🌙 Dark', light: '☀️ Light' },
+    hero: {
+      eyebrow: "Hi, I'm",
+      chip1: 'Builder',
+      chip2: 'Media',
+      chip3: 'Support',
+      bio: `I build websites, apps, and tools with AI-assisted vibe-coding, and create
+        media — video, audio, and 3D — on the side. Off-screen, I help people get
+        unstuck on Windows and Linux, remotely or in person.`,
+      storeAria: 'Visit the store',
+      storeText: 'Visit<br>Store',
+    },
+    toolkit: {
+      eyebrow: 'Toolkit',
+      headline: 'What I work with',
+      hint: 'Tap a tool to see it light up.',
+    },
+    support: {
+      eyebrow: 'Support',
+      headline: 'Support, wherever you are',
+      text: `Remote or in person, I help with setup, troubleshooting, and everyday tech
+        problems — across Windows and Linux, in Arabic, English, or German.`,
+      you: 'YOU',
+      platforms: 'Platforms',
+      languages: 'Languages',
+    },
+    build: {
+      eyebrow: 'Build',
+      headline: 'Websites, apps, tools & SaaS',
+      text: `I design and build websites, apps, small tools, and SaaS products —
+        using AI-assisted "vibe-coding" workflows to move fast without cutting corners.`,
+      step1: 'Design',
+      step2: 'Build',
+      step3: 'Ship',
+    },
+    footer: { status: 'IT · Web · Media — Germany' },
+    meta: {
+      description: 'Ali Kenjo — builder of websites, apps, and tools, and cross-platform tech support in Germany.',
+    },
+  },
+  de: {
+    nav: { logoAria: 'Nach oben', toolkit: 'Werkzeuge', support: 'Support', build: 'Erstellen' },
+    lang: { toggle: '🌐 EN' },
+    dark: { dark: '🌙 Nacht', light: '☀️ Hell' },
+    hero: {
+      eyebrow: 'Hallo, ich bin',
+      chip1: 'Entwickler',
+      chip2: 'Medien',
+      chip3: 'Support',
+      bio: `Ich baue Websites, Apps und Tools mit KI-gestütztem Vibe-Coding und erstelle
+        nebenbei Medien — Video, Audio und 3D. Abseits des Bildschirms helfe ich
+        Menschen bei Problemen mit Windows und Linux — remote oder vor Ort.`,
+      storeAria: 'Zum Store gehen',
+      storeText: 'Zum<br>Store',
+    },
+    toolkit: {
+      eyebrow: 'Werkzeuge',
+      headline: 'Womit ich arbeite',
+      hint: 'Tippe auf ein Tool, damit es aufleuchtet.',
+    },
+    support: {
+      eyebrow: 'Support',
+      headline: 'Support, wo auch immer du bist',
+      text: `Remote oder vor Ort helfe ich bei Einrichtung, Fehlerbehebung und
+        alltäglichen Technikproblemen — auf Windows und Linux, auf Arabisch, Englisch oder Deutsch.`,
+      you: 'DU',
+      platforms: 'Plattformen',
+      languages: 'Sprachen',
+    },
+    build: {
+      eyebrow: 'Erstellen',
+      headline: 'Websites, Apps, Tools & SaaS',
+      text: `Ich entwerfe und baue Websites, Apps, kleine Tools und SaaS-Produkte —
+        mit KI-gestützten „Vibe-Coding"-Workflows, um schnell und trotzdem sauber zu arbeiten.`,
+      step1: 'Entwerfen',
+      step2: 'Bauen',
+      step3: 'Liefern',
+    },
+    footer: { status: 'IT · Web · Medien — Deutschland' },
+    meta: {
+      description: 'Ali Kenjo — baut Websites, Apps und Tools und bietet plattformübergreifenden Tech-Support in Deutschland.',
+    },
+  },
+};
+
+function getTranslation(lang, key) {
+  return key.split('.').reduce((obj, part) => (obj ? obj[part] : undefined), TRANSLATIONS[lang]);
+}
+
+function applyLanguage(lang) {
+  document.documentElement.lang = lang;
+
+  document.querySelectorAll('[data-i18n]').forEach((el) => {
+    const value = getTranslation(lang, el.getAttribute('data-i18n'));
+    if (value !== undefined) el.textContent = value;
+  });
+
+  document.querySelectorAll('[data-i18n-html]').forEach((el) => {
+    const value = getTranslation(lang, el.getAttribute('data-i18n-html'));
+    if (value !== undefined) el.innerHTML = value;
+  });
+
+  document.querySelectorAll('[data-i18n-attr]').forEach((el) => {
+    el.getAttribute('data-i18n-attr').split(',').forEach((pair) => {
+      const [attr, key] = pair.split(':').map((s) => s.trim());
+      const value = getTranslation(lang, key);
+      if (value !== undefined) el.setAttribute(attr, value);
+    });
+  });
+
+  const langToggle = document.getElementById('lang-toggle');
+  if (langToggle) langToggle.textContent = getTranslation(lang, 'lang.toggle');
+
+  updateButtonText(html.classList.contains('dark-mode'));
+}
+
+function initLanguage() {
+  let lang = 'en';
+  try {
+    lang = localStorage.getItem('lang') || 'en';
+  } catch (e) {}
+  applyLanguage(lang);
+
+  const langToggle = document.getElementById('lang-toggle');
+  if (langToggle) {
+    langToggle.addEventListener('click', () => {
+      const next = document.documentElement.lang === 'de' ? 'en' : 'de';
+      try {
+        localStorage.setItem('lang', next);
+      } catch (e) {}
+      applyLanguage(next);
+    });
+  }
+}
+
 /* ── Dark mode ── */
 const darkModeToggle = document.querySelector('.dark-mode-toggle');
 const html = document.documentElement;
@@ -17,7 +157,8 @@ function toggleDarkMode() {
 
 function updateButtonText(isDarkMode) {
   if (darkModeToggle) {
-    darkModeToggle.textContent = isDarkMode ? '☀️ Light' : '🌙 Dark';
+    const lang = document.documentElement.lang === 'de' ? 'de' : 'en';
+    darkModeToggle.textContent = getTranslation(lang, isDarkMode ? 'dark.light' : 'dark.dark');
     darkModeToggle.setAttribute('aria-pressed', isDarkMode);
   }
 }
@@ -140,9 +281,9 @@ function initBackgroundMotion() {
   function palette() {
     const styles = getComputedStyle(document.documentElement);
     return [
-      styles.getPropertyValue('--c1').trim(),
-      styles.getPropertyValue('--c2').trim(),
-      styles.getPropertyValue('--c3').trim(),
+      styles.getPropertyValue('--accent').trim(),
+      styles.getPropertyValue('--accent-hover').trim(),
+      styles.getPropertyValue('--accent-2').trim(),
     ];
   }
 
@@ -262,6 +403,7 @@ function initBackgroundMotion() {
 }
 
 document.addEventListener('DOMContentLoaded', () => {
+  initLanguage();
   initDarkMode();
   initScrollProgress();
   initScrollSpy();
