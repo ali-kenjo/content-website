@@ -10,7 +10,7 @@ const REDUCED_MOTION = window.matchMedia('(prefers-reduced-motion: reduce)').mat
    at a dotted key path here (e.g. "hero.bio" -> TRANSLATIONS.en.hero.bio). */
 const TRANSLATIONS = {
   en: {
-    nav: { logoAria: 'Back to top', toolkit: 'Toolkit', support: 'Support', build: 'Build' },
+    nav: { logoAria: 'Back to top', toolkit: 'Toolkit', support: 'Support', build: 'Build', clockAria: 'Local time' },
     lang: { toggle: '🌐 DE' },
     dark: { dark: '🌙 Dark', light: '☀️ Light' },
     hero: {
@@ -64,7 +64,7 @@ const TRANSLATIONS = {
     },
   },
   de: {
-    nav: { logoAria: 'Nach oben', toolkit: 'Werkzeuge', support: 'Support', build: 'Erstellen' },
+    nav: { logoAria: 'Nach oben', toolkit: 'Werkzeuge', support: 'Support', build: 'Erstellen', clockAria: 'Ortszeit' },
     lang: { toggle: '🌐 EN' },
     dark: { dark: '🌙 Nacht', light: '☀️ Hell' },
     hero: {
@@ -230,6 +230,38 @@ function updateButtonText(isDarkMode) {
 
 if (darkModeToggle) {
   darkModeToggle.addEventListener('click', toggleDarkMode);
+}
+
+/* ── Nav clock ──
+   Shows the visitor's own local time in the nav bar, ticking every second.
+   "Location" here means the timezone the visitor's device/browser is already
+   set to (Intl.DateTimeFormat().resolvedOptions().timeZone) — this needs no
+   geolocation permission prompt and is what "local time" means on the web. */
+function initClock() {
+  const clock = document.getElementById('nav-clock');
+  if (!clock) return;
+
+  let timeZone;
+  try {
+    timeZone = Intl.DateTimeFormat().resolvedOptions().timeZone;
+  } catch (e) {
+    timeZone = undefined; // fall back to the browser's default rendering
+  }
+
+  const formatter = new Intl.DateTimeFormat(undefined, {
+    hour: '2-digit',
+    minute: '2-digit',
+    second: '2-digit',
+    timeZone,
+  });
+
+  function tick() {
+    clock.textContent = formatter.format(new Date());
+  }
+
+  if (timeZone) clock.title = timeZone.replace(/_/g, ' ');
+  tick();
+  setInterval(tick, 1000);
 }
 
 /* ── Scroll progress bar ──
@@ -565,6 +597,7 @@ function initBackgroundMotion() {
 document.addEventListener('DOMContentLoaded', () => {
   initLanguage();
   initDarkMode();
+  initClock();
   initScrollProgress();
   initScrollSpy();
   initReveal();

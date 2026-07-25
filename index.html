@@ -49,6 +49,12 @@
       <a href="#build" class="nav-link" data-i18n="nav.build">Build</a>
     </div>
     <div class="nav-sep"></div>
+    <!-- Live digital clock showing the visitor's own local time (based on their
+         device/browser timezone, no location permission needed). Kept updated
+         every second by script.js (initClock). The title attribute shows the
+         detected timezone name on hover. -->
+    <span class="nav-clock" id="nav-clock" aria-label="Local time" data-i18n-attr="aria-label:nav.clockAria"></span>
+    <div class="nav-sep"></div>
     <!-- Shows the language you'd switch TO ("DE" while browsing in English, "EN"
          while browsing in German). Click handler lives in script.js (initLanguage). -->
     <button type="button" class="lang-toggle" id="lang-toggle" aria-label="Switch language">🌐 DE</button>
