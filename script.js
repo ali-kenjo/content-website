@@ -31,7 +31,7 @@ const TRANSLATIONS = {
       infoDefault: "Hover or tap a tool above to find out what it's for.",
       tools: {
         vscode: "My daily driver — I pair it with AI so I can vibe-code fast without losing the plot.",
-        docker: 'Docker keeps my environments clean and portable, n8n handles the automations I\'d rather not do by hand.',
+        docker: 'Keeps my dev environments clean, portable, and easy to spin up or tear down.',
         blender: 'For 3D modeling, animation, and the occasional render that eats my evening.',
         kdenlive: 'Where I cut and polish video footage.',
         obs: 'For screen recording and streaming.',
@@ -86,7 +86,7 @@ const TRANSLATIONS = {
       infoDefault: 'Fahre über ein Tool oder tippe drauf, um zu erfahren, wofür es ist.',
       tools: {
         vscode: 'Mein täglicher Begleiter — kombiniert mit KI, damit ich schnell vibe-coden kann, ohne den Überblick zu verlieren.',
-        docker: 'Docker hält meine Umgebungen sauber und portabel, n8n übernimmt die Automatisierungen, die ich nicht von Hand machen will.',
+        docker: 'Hält meine Entwicklungsumgebungen sauber, portabel und im Handumdrehen startklar.',
         blender: 'Für 3D-Modellierung, Animation und das gelegentliche Rendering, das meinen Abend frisst.',
         kdenlive: 'Hier schneide und poliere ich Videomaterial.',
         obs: 'Für Bildschirmaufnahmen und Streaming.',
@@ -233,10 +233,11 @@ if (darkModeToggle) {
 }
 
 /* ── Nav clock ──
-   Shows the visitor's own local time in the nav bar, ticking every second.
-   "Location" here means the timezone the visitor's device/browser is already
-   set to (Intl.DateTimeFormat().resolvedOptions().timeZone) — this needs no
-   geolocation permission prompt and is what "local time" means on the web. */
+   Shows the visitor's own local date and time in the nav bar, ticking every
+   second. "Location" here means the timezone the visitor's device/browser is
+   already set to (Intl.DateTimeFormat().resolvedOptions().timeZone) — this
+   needs no geolocation permission prompt and is what "local time" means on
+   the web. */
 function initClock() {
   const clock = document.getElementById('nav-clock');
   if (!clock) return;
@@ -248,15 +249,38 @@ function initClock() {
     timeZone = undefined; // fall back to the browser's default rendering
   }
 
-  const formatter = new Intl.DateTimeFormat(undefined, {
+  // formatToParts (rather than a locale string) so the output is always
+  // "dd.mm.yyyy" regardless of the visitor's locale digit ordering.
+  const dateFormatter = new Intl.DateTimeFormat('en-CA', {
+    day: '2-digit',
+    month: '2-digit',
+    year: 'numeric',
+    timeZone,
+  });
+
+  const timeFormatter = new Intl.DateTimeFormat(undefined, {
     hour: '2-digit',
     minute: '2-digit',
     second: '2-digit',
     timeZone,
   });
 
+  function formatDate(now) {
+    const parts = Object.fromEntries(dateFormatter.formatToParts(now).map((p) => [p.type, p.value]));
+    return `${parts.day}.${parts.month}.${parts.year}`;
+  }
+
   function tick() {
-    clock.textContent = formatter.format(new Date());
+    const now = new Date();
+    clock.innerHTML = '';
+    const timePart = document.createElement('span');
+    timePart.className = 'nav-clock-time';
+    timePart.textContent = timeFormatter.format(now);
+    const datePart = document.createElement('span');
+    datePart.className = 'nav-clock-date';
+    datePart.textContent = formatDate(now);
+    clock.appendChild(timePart);
+    clock.appendChild(datePart);
   }
 
   if (timeZone) clock.title = timeZone.replace(/_/g, ' ');
