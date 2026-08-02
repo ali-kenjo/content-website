@@ -15,6 +15,7 @@ all (see the ``_TrayIcon`` docstring for why that can happen).
 # Every type referenced below is imported directly (no TYPE_CHECKING-only
 # forward refs), so dropping the future import needs no other changes.
 
+import contextlib
 import logging
 import os
 import signal
@@ -29,11 +30,11 @@ gi.require_version("Gio", "2.0")
 gi.require_version("GLib", "2.0")
 from gi.repository import Adw, Gio, GLib  # noqa: E402
 
-from screensaver_app import APPLICATION_ID
-from screensaver_app.display_window import DisplayManager
-from screensaver_app.idle_detector import IdleMonitor
-from screensaver_app.settings import get_default_settings
-from screensaver_app.settings_window import PreferencesWindow
+from screensaver_app import APPLICATION_ID  # noqa: E402
+from screensaver_app.display_window import DisplayManager  # noqa: E402
+from screensaver_app.idle_detector import IdleMonitor  # noqa: E402
+from screensaver_app.settings import get_default_settings  # noqa: E402
+from screensaver_app.settings_window import PreferencesWindow  # noqa: E402
 
 logger = logging.getLogger(__name__)
 
@@ -268,10 +269,8 @@ class _TrayIcon:
     def stop(self) -> None:
         """Disconnect the tray's D-Bus connection, if one was established."""
         if self._bus is not None:
-            try:
+            with contextlib.suppress(Exception):
                 self._bus.disconnect()
-            except Exception:  # noqa: BLE001
-                pass
             self._bus = None
 
     def _start(self) -> None:
@@ -294,7 +293,7 @@ class _TrayIcon:
                 super().__init__("com.canonical.dbusmenu")
 
             @method()
-            def GetLayout(self, parent_id: "i", recursion_depth: "i", property_names: "as") -> "u(ia{sv}av)":  # noqa: N802
+            def GetLayout(self, parent_id: "i", recursion_depth: "i", property_names: "as") -> "u(ia{sv}av)":  # noqa: N802, F821, F722
                 """Return the static menu layout a dbusmenu client requests
                 before first displaying the menu."""
                 children = [
@@ -308,7 +307,7 @@ class _TrayIcon:
                 return [1, root]
 
             @method()
-            def Event(self, item_id: "i", event_id: "s", data: "v", timestamp: "u") -> None:  # noqa: N802
+            def Event(self, item_id: "i", event_id: "s", data: "v", timestamp: "u") -> None:  # noqa: N802, F821
                 """Dispatch a menu item click to the matching GAction."""
                 if event_id != "clicked":
                     return
@@ -318,23 +317,23 @@ class _TrayIcon:
                         return
 
             @method()
-            def AboutToShow(self, item_id: "i") -> "b":  # noqa: N802
+            def AboutToShow(self, item_id: "i") -> "b":  # noqa: N802, F821
                 """dbusmenu hook called before a submenu is shown; the menu
                 is fully static, so there's nothing to prepare."""
                 return False
 
             @dbus_property(access=PropertyAccess.READ)
-            def Version(self) -> "u":  # noqa: N802
+            def Version(self) -> "u":  # noqa: N802, F821
                 """dbusmenu protocol version this implementation speaks."""
                 return 3
 
             @dbus_property(access=PropertyAccess.READ)
-            def Status(self) -> "s":  # noqa: N802
+            def Status(self) -> "s":  # noqa: N802, F821
                 """Static dbusmenu status; the menu is always usable."""
                 return "normal"
 
             @dbus_property(access=PropertyAccess.READ)
-            def TextDirection(self) -> "s":  # noqa: N802
+            def TextDirection(self) -> "s":  # noqa: N802, F821
                 """Static left-to-right text direction for the menu."""
                 return "ltr"
 
@@ -346,33 +345,33 @@ class _TrayIcon:
                 super().__init__("org.kde.StatusNotifierItem")
 
             @dbus_property(access=PropertyAccess.READ)
-            def Category(self) -> "s":  # noqa: N802
+            def Category(self) -> "s":  # noqa: N802, F821
                 """StatusNotifierItem category shown to the host panel."""
                 return "ApplicationStatus"
 
             @dbus_property(access=PropertyAccess.READ)
-            def Id(self) -> "s":  # noqa: N802
+            def Id(self) -> "s":  # noqa: N802, F821
                 """Stable application id used to identify this tray item."""
                 return APPLICATION_ID
 
             @dbus_property(access=PropertyAccess.READ)
-            def Title(self) -> "s":  # noqa: N802
+            def Title(self) -> "s":  # noqa: N802, F821
                 """Human-readable title shown in tooltips/menus."""
                 return "Screensaver"
 
             @dbus_property(access=PropertyAccess.READ)
-            def Status(self) -> "s":  # noqa: N802
+            def Status(self) -> "s":  # noqa: N802, F821
                 """Static "Active" status; the icon is always relevant."""
                 return "Active"
 
             @dbus_property(access=PropertyAccess.READ)
-            def IconName(self) -> "s":  # noqa: N802
+            def IconName(self) -> "s":  # noqa: N802, F821
                 """Themed icon name resolved against the installed hicolor
                 icon set."""
                 return "preferences-desktop-screensaver-symbolic"
 
             @dbus_property(access=PropertyAccess.READ)
-            def IconPixmap(self) -> "a(iiay)":  # noqa: N802
+            def IconPixmap(self) -> "a(iiay)":  # noqa: N802, F821
                 """Raw pixmap fallback for hosts that can't resolve
                 ``IconName``; intentionally empty (see inline note)."""
                 # No raw pixmap fallback shipped -- IconName above resolves
@@ -382,7 +381,7 @@ class _TrayIcon:
                 return []
 
             @dbus_property(access=PropertyAccess.READ)
-            def IconThemePath(self) -> "s":  # noqa: N802
+            def IconThemePath(self) -> "s":  # noqa: N802, F821
                 """Extra icon theme search path; empty means "use the
                 standard search path" (see inline note)."""
                 # Empty string means "use the standard icon theme search
@@ -390,35 +389,35 @@ class _TrayIcon:
                 return ""
 
             @dbus_property(access=PropertyAccess.READ)
-            def ItemIsMenu(self) -> "b":  # noqa: N802
+            def ItemIsMenu(self) -> "b":  # noqa: N802, F821
                 """Tells the host that left-click should open the menu
                 rather than call :meth:`Activate` (some hosts ignore this
                 and call both; ``Activate`` opens preferences either way)."""
                 return True
 
             @dbus_property(access=PropertyAccess.READ)
-            def Menu(self) -> "o":  # noqa: N802
+            def Menu(self) -> "o":  # noqa: N802, F821
                 """Object path of the exported ``_Menu`` instance."""
                 return "/MenuBar"
 
             @method()
-            def Activate(self, x: "i", y: "i") -> None:  # noqa: N802
+            def Activate(self, x: "i", y: "i") -> None:  # noqa: N802, F821
                 """Left-click handler: open the preferences window."""
                 app.activate_action("preferences", None)
 
             @method()
-            def SecondaryActivate(self, x: "i", y: "i") -> None:  # noqa: N802
+            def SecondaryActivate(self, x: "i", y: "i") -> None:  # noqa: N802, F821
                 """Middle-click handler: show the screensaver preview."""
                 app.activate_action("preview-now", None)
 
             @method()
-            def ContextMenu(self, x: "i", y: "i") -> None:  # noqa: N802
+            def ContextMenu(self, x: "i", y: "i") -> None:  # noqa: N802, F821
                 """Right-click handler; unused since ``Menu`` above already
                 gives hosts a menu to display directly."""
                 return None
 
             @method()
-            def Scroll(self, delta: "i", orientation: "s") -> None:  # noqa: N802
+            def Scroll(self, delta: "i", orientation: "s") -> None:  # noqa: N802, F821
                 """Scroll-wheel handler; this tray icon has nothing to
                 scroll through, so it's a no-op."""
                 return None

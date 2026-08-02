@@ -32,11 +32,12 @@ that too is surfaced as a degraded, non-fatal state rather than a crash.
 # those into plain strings of their source text instead -- which breaks
 # dbus_next's parsing. See InhibitWatcher below.
 
+import contextlib
 import logging
 import os
 from dataclasses import dataclass
 from enum import Enum
-from typing import TYPE_CHECKING
+from typing import TYPE_CHECKING, ClassVar
 
 import gi
 
@@ -121,7 +122,9 @@ class _X11IdleBackend:
         scheduled."""
         try:
             from Xlib import display as xlib_display
-            from Xlib.ext import screensaver as xlib_screensaver  # noqa: F401  (registers the extension methods)
+            from Xlib.ext import (
+                screensaver as xlib_screensaver,  # noqa: F401  (registers the extension methods)
+            )
         except ImportError as exc:
             self.state = BackendState(
                 BackendStatus.UNSUPPORTED, f"python-xlib is not installed: {exc}"
@@ -169,10 +172,8 @@ class _X11IdleBackend:
             GLib.source_remove(self._poll_source_id)
             self._poll_source_id = None
         if self._display is not None:
-            try:
+            with contextlib.suppress(Exception):
                 self._display.close()
-            except Exception:  # noqa: BLE001
-                pass
             self._display = None
             self._root = None
 
@@ -427,7 +428,7 @@ class InhibitWatcher:
                 super().__init__("org.freedesktop.ScreenSaver")
 
             @method()
-            def Inhibit(self, application_name: "s", reason_for_inhibit: "s") -> "u":  # noqa: N802
+            def Inhibit(self, application_name: "s", reason_for_inhibit: "s") -> "u":  # noqa: N802, F821
                 """Register a new inhibit request and return its cookie,
                 which the caller must pass to :meth:`UnInhibit` later."""
                 cookie = watcher._next_cookie
@@ -443,13 +444,13 @@ class InhibitWatcher:
                 return cookie
 
             @method()
-            def UnInhibit(self, cookie: "u") -> None:  # noqa: N802
+            def UnInhibit(self, cookie: "u") -> None:  # noqa: N802, F821
                 """Release a previously issued inhibit cookie."""
                 watcher._cookies.discard(cookie)
                 watcher._notify_change()
 
             @method()
-            def GetActive(self) -> "b":  # noqa: N802
+            def GetActive(self) -> "b":  # noqa: N802, F821
                 """Whether the screensaver is currently active; always
                 reports False since actual activation state isn't wired in."""
                 return False
@@ -494,10 +495,8 @@ class InhibitWatcher:
     def _teardown(self) -> None:
         """Disconnect from the bus (if connected) and reset all state."""
         if self._bus is not None:
-            try:
+            with contextlib.suppress(Exception):
                 self._bus.disconnect()
-            except Exception:  # noqa: BLE001
-                pass
         self._bus = None
         self._interface = None
         self._cookies.clear()
@@ -544,7 +543,7 @@ class IdleMonitor(GObject.Object):
             for the settings window to show a live warning banner.
     """
 
-    __gsignals__ = {
+    __gsignals__: ClassVar = {
         "idle": (GObject.SignalFlags.RUN_FIRST, None, (float,)),
         "active": (GObject.SignalFlags.RUN_FIRST, None, ()),
         "status-changed": (GObject.SignalFlags.RUN_FIRST, None, ()),

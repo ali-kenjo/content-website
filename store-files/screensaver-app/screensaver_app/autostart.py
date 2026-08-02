@@ -19,7 +19,7 @@ import gi
 gi.require_version("GLib", "2.0")
 from gi.repository import GLib  # noqa: E402
 
-from screensaver_app import APPLICATION_ID
+from screensaver_app import APPLICATION_ID  # noqa: E402
 
 logger = logging.getLogger(__name__)
 

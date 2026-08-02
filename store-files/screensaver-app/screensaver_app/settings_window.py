@@ -24,11 +24,10 @@ gi.require_version("Gtk", "4.0")
 gi.require_version("Gio", "2.0")
 gi.require_version("GLib", "2.0")
 gi.require_version("Pango", "1.0")
-from gi.repository import Adw, Gio, GLib, Pango  # noqa: E402
-from gi.repository import Gtk  # noqa: E402
+from gi.repository import Adw, Gio, GLib, Gtk, Pango  # noqa: E402
 
-from screensaver_app import autostart
-from screensaver_app.modes import ScreensaverMode, create_mode
+from screensaver_app import autostart  # noqa: E402
+from screensaver_app.modes import ScreensaverMode, create_mode  # noqa: E402
 
 if TYPE_CHECKING:
     from screensaver_app.idle_detector import IdleMonitor
@@ -244,7 +243,7 @@ class PreferencesWindow(Adw.PreferencesWindow):
         if self._preview_mode is not None:
             try:
                 self._preview_mode.on_stop()
-            except Exception:  # noqa: BLE001
+            except Exception:
                 logger.exception("Error stopping previous preview mode")
             self._preview_mode = None
         for child in list(self._preview_container):
@@ -253,7 +252,7 @@ class PreferencesWindow(Adw.PreferencesWindow):
             self._preview_mode = create_mode(mode_id, self._settings)
             self._preview_mode.render(self._preview_container)
             self._preview_mode.on_start()
-        except Exception:  # noqa: BLE001 - a broken preview must not break the settings window
+        except Exception:  # a broken preview must not break the settings window
             logger.exception("Preview render failed for mode %r", mode_id)
 
     # -- Slideshow page -----------------------------------------------------
@@ -364,7 +363,7 @@ class PreferencesWindow(Adw.PreferencesWindow):
         if self._preview_mode is not None:
             try:
                 self._preview_mode.on_stop()
-            except Exception:  # noqa: BLE001
+            except Exception:
                 logger.exception("Error stopping preview mode on close")
             self._preview_mode = None
         self._settings.preview_mode = False

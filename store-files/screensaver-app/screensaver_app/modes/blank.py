@@ -7,7 +7,7 @@ import gi
 gi.require_version("Gtk", "4.0")
 from gi.repository import Gdk, Gtk  # noqa: E402
 
-from screensaver_app.modes import ScreensaverMode
+from screensaver_app.modes import ScreensaverMode  # noqa: E402
 
 _CSS = b"""
 .screensaver-blank { background-color: #000000; }

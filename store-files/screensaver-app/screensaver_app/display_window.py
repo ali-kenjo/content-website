@@ -20,6 +20,7 @@ from __future__ import annotations
 
 import logging
 import os
+from typing import ClassVar
 
 import gi
 
@@ -111,7 +112,7 @@ class DisplayManager(GObject.Object):
         dismissed() -- fired once when the screensaver is closed by user input.
     """
 
-    __gsignals__ = {
+    __gsignals__: ClassVar = {
         "dismissed": (GObject.SignalFlags.RUN_FIRST, None, ()),
     }
 
@@ -166,7 +167,7 @@ class DisplayManager(GObject.Object):
         for mode in self._modes:
             try:
                 mode.on_stop()
-            except Exception:  # noqa: BLE001 - one broken mode must not block teardown of the rest
+            except Exception:  # one broken mode must not block teardown of the rest
                 logger.exception("Error stopping screensaver mode")
         for window in self._windows:
             window.close()
@@ -189,7 +190,7 @@ class DisplayManager(GObject.Object):
         mode = create_mode(mode_id, self._settings)
         try:
             mode.render(container)
-        except Exception:  # noqa: BLE001 - a mode failing to render must not block the others
+        except Exception:  # a mode failing to render must not block the others
             logger.exception("Mode %r failed to render; falling back to blank", mode_id)
             for child in list(container):
                 container.remove(child)

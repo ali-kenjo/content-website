@@ -12,7 +12,7 @@ gi.require_version("Gtk", "4.0")
 gi.require_version("GdkPixbuf", "2.0")
 from gi.repository import Gdk, GdkPixbuf, GLib, Gtk  # noqa: E402
 
-from screensaver_app.modes import ScreensaverMode
+from screensaver_app.modes import ScreensaverMode  # noqa: E402
 
 if TYPE_CHECKING:
     from screensaver_app.settings import Settings

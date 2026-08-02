@@ -21,7 +21,7 @@ gi.require_version("Pango", "1.0")
 gi.require_version("PangoCairo", "1.0")
 from gi.repository import Gdk, GLib, Gtk, Pango, PangoCairo  # noqa: E402
 
-from screensaver_app.modes import ScreensaverMode
+from screensaver_app.modes import ScreensaverMode  # noqa: E402
 
 if TYPE_CHECKING:
     from screensaver_app.settings import Settings

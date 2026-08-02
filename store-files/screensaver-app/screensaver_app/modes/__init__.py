@@ -42,10 +42,10 @@ class ScreensaverMode(ABC):
     def render(self, widget: Gtk.Widget) -> None:
         """Populate ``widget`` (an empty Gtk.Box) with this mode's content."""
 
-    def on_start(self) -> None:
+    def on_start(self) -> None:  # noqa: B027 - deliberately optional hook, e.g. BlankMode never overrides it
         """Called right after ``render`` when the window becomes visible."""
 
-    def on_stop(self) -> None:
+    def on_stop(self) -> None:  # noqa: B027 - deliberately optional hook, e.g. BlankMode never overrides it
         """Called before the window is destroyed. Stop all timers/animations here."""
 
 

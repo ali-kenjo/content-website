@@ -10,6 +10,7 @@ and ``iResolution`` (vec2, pixels) uniforms and write ``fragColor``.
 
 from __future__ import annotations
 
+import contextlib
 import ctypes
 import logging
 import time
@@ -27,7 +28,7 @@ try:
 except ImportError:  # pragma: no cover - surfaced as a render error, not a crash
     GL = None
 
-from screensaver_app.modes import ScreensaverMode
+from screensaver_app.modes import ScreensaverMode  # noqa: E402
 
 if TYPE_CHECKING:
     from screensaver_app.settings import Settings
@@ -81,10 +82,8 @@ class ShaderMode(ScreensaverMode):
         self._gl_area.set_hexpand(True)
         self._gl_area.set_vexpand(True)
         self._gl_area.set_auto_render(True)
-        try:
+        with contextlib.suppress(Exception):  # not all GL drivers accept an explicit request
             self._gl_area.set_required_version(3, 3)
-        except Exception:  # noqa: BLE001 - not all GL drivers accept an explicit request
-            pass
         self._gl_area.connect("realize", self._on_realize)
         self._gl_area.connect("unrealize", self._on_unrealize)
         self._gl_area.connect("render", self._on_render)
