@@ -320,11 +320,13 @@
 
       <details>
         <summary>How to install it</summary>
-        <p>Download the ZIP below, extract it, then from a terminal inside the extracted folder:</p>
+        <p>Clone the repo below, then from a terminal inside it:</p>
         <pre><code># System packages (Debian/Ubuntu/Pop!_OS):
 sudo apt install python3-gi gir1.2-gtk-4.0 gir1.2-adw-1 \
     libglib2.0-dev libcairo2-dev python3-dev
 
+git clone https://github.com/ali-kenjo/screen-saving-app-for-linux.git
+cd screen-saving-app-for-linux
 pip install .
 screensaver-app</code></pre>
         <p>That registers it as a regular app (with a <code>.desktop</code> entry) and installs the <code>screensaver-app</code> command. Turn on "Launch at login" in its preferences window to have it start automatically, like any other screensaver.</p>
@@ -342,8 +344,8 @@ screensaver-app</code></pre>
 
       <details>
         <summary>How to modify it locally</summary>
-        <p>Same download, installed in editable mode instead so your edits take effect immediately:</p>
-        <pre><code>cd screensaver-app
+        <p>Same repo, installed in editable mode instead so your edits take effect immediately:</p>
+        <pre><code>cd screen-saving-app-for-linux
 glib-compile-schemas data/
 pip install -e '.[dev]'
 screensaver-app</code></pre>
@@ -352,9 +354,9 @@ screensaver-app</code></pre>
 
       <div class="btn-row">
         <!-- "magnetic" makes this button follow the cursor slightly on hover
-             (see initMagnetic in script.js). "download" tells the browser to
-             save the ZIP instead of navigating to it. -->
-        <a href="store-files/screensaver-app.zip" class="download-btn magnetic" download>Download for Free</a>
+             (see initMagnetic in script.js). Links out to the GitHub repo
+             instead of serving a ZIP directly. -->
+        <a href="https://github.com/ali-kenjo/screen-saving-app-for-linux" class="download-btn magnetic" target="_blank" rel="noopener">Get it on GitHub</a>
         <a href="store-files/screensaver-app/README.md" class="secondary-btn magnetic">README</a>
         <a href="store-files/screensaver-app/LICENSE" class="secondary-btn magnetic">License</a>
       </div>
