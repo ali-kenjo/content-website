@@ -1,0 +1,6 @@
+PyGObject>=3.48
+pycairo>=1.20
+python-xlib>=0.33
+pywayland>=0.4.17
+dbus-next>=0.2.3
+PyOpenGL>=3.1.7

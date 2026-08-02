@@ -1,0 +1,12 @@
+[Desktop Entry]
+Type=Application
+Name=Screensaver
+Comment=A native GTK4 screensaver with blank, clock, slideshow, and shader modes
+Exec=screensaver-app
+Icon=com.alikenjo.screensaver
+Terminal=false
+NoDisplay=false
+Categories=Utility;GTK;
+Keywords=screensaver;lock;idle;
+StartupNotify=false
+X-GNOME-Autostart-enabled=true

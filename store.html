@@ -78,16 +78,31 @@
       box-shadow: 0 14px 34px color-mix(in srgb, var(--accent) 42%, transparent);
     }
 
+    /* Grid of offer cards: as many columns as fit at >=300px each, capped at
+       3 per row by the container's max-width (3 cards * 560px + 2 gaps). With
+       fewer than 3 cards, auto-fit collapses the unused track(s) so the
+       existing cards expand to fill the row instead of leaving a gap. */
+    .offer-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+      gap: 2rem;
+      width: 100%;
+      max-width: calc(560px * 3 + 2rem * 2);
+      margin-top: 2rem;
+      align-items: start;
+    }
+
     .offer-card {
       position: relative;
       overflow: hidden;
-      width: min(100%, 560px);
+      width: 100%;
+      max-width: 560px;
+      margin: 0 auto;
       background: var(--surface);
       border: 1px solid var(--border);
       border-radius: var(--radius-lg);
       box-shadow: 0 24px 80px var(--shadow);
       padding: 2rem;
-      margin-top: 2rem;
       text-align: left;
       transition: transform 0.3s ease, box-shadow 0.3s ease;
     }
@@ -142,6 +157,110 @@
       background: var(--accent);
       color: var(--on-accent);
     }
+
+    /* Secondary (outline) button, for actions that shouldn't compete with
+       the main download-btn call to action -- e.g. "View README". */
+    .secondary-btn {
+      display: inline-block;
+      padding: 0.85rem 1.6rem;
+      background: transparent;
+      color: var(--text-primary);
+      border: 1px solid var(--border);
+      border-radius: 999px;
+      font-family: var(--font-body);
+      font-size: 0.8rem;
+      font-weight: 700;
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+      text-decoration: none;
+      transition: border-color 0.2s, color 0.2s;
+    }
+
+    .secondary-btn:hover {
+      border-color: var(--accent);
+      color: var(--accent);
+    }
+
+    .license-badge {
+      display: inline-block;
+      margin-bottom: 1rem;
+      padding: 0.3rem 0.85rem;
+      font-family: var(--font-body);
+      font-size: 0.7rem;
+      font-weight: 700;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      color: var(--accent-2);
+      background: color-mix(in srgb, var(--accent-2) 12%, transparent);
+      border-radius: 999px;
+    }
+
+    .offer-card .oss-note {
+      background: var(--bg);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-sm);
+      padding: 1rem 1.2rem;
+      margin-bottom: 1.5rem;
+      font-size: 0.92rem;
+      line-height: 1.65;
+    }
+
+    .offer-card details {
+      border-top: 1px solid var(--border);
+      padding: 0.9rem 0;
+    }
+
+    .offer-card details:last-of-type {
+      margin-bottom: 1.5rem;
+    }
+
+    .offer-card summary {
+      cursor: pointer;
+      font-family: var(--font-display);
+      font-weight: 600;
+      font-size: 1rem;
+      color: var(--text-primary);
+    }
+
+    .offer-card details p,
+    .offer-card details ul {
+      margin-top: 0.75rem;
+      margin-bottom: 0;
+      font-size: 0.92rem;
+    }
+
+    .offer-card details ul {
+      padding-left: 1.2rem;
+    }
+
+    .offer-card details li {
+      margin-bottom: 0.4rem;
+      line-height: 1.6;
+      color: var(--text-secondary);
+    }
+
+    .offer-card pre {
+      background: var(--bg);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-sm);
+      padding: 0.85rem 1rem;
+      margin-top: 0.75rem;
+      overflow-x: auto;
+      font-size: 0.82rem;
+      line-height: 1.5;
+    }
+
+    .offer-card code {
+      font-family: 'SFMono-Regular', Consolas, Menlo, monospace;
+    }
+
+    .offer-card .btn-row {
+      display: flex;
+      flex-wrap: wrap;
+      align-items: center;
+      gap: 0.75rem;
+      margin-top: 1.5rem;
+    }
   </style>
 </head>
 <body>
@@ -167,6 +286,80 @@
     <h1>Store</h1>
     <p>Welcome to the store. This page is under construction and will feature AI-created tools, resources, and products coming soon.</p>
 
+    <!-- Grid of store offers, up to 3 per row (see .offer-grid) -- currently
+         two cards: the screensaver app and the free PDF. -->
+    <div class="offer-grid">
+
+    <!-- Screensaver app offer: a full open-source GTK4 app, not just a file
+         download, so this card is heavier than the PDF one below it --
+         it carries the open-source disclaimer plus collapsible install/use/
+         modify instructions right on the page, per the note requested for
+         the app-description section. -->
+    <div class="offer-card">
+      <span class="license-badge">GPL-3.0-or-later · Open Source</span>
+      <h2>Screensaver — GTK4 Screensaver for Linux</h2>
+      <p>
+        A native GTK4/libadwaita screensaver for Linux (Pop!_OS, GNOME,
+        COSMIC), with five modes -- blank, clock, photo slideshow, GLSL
+        shaders, and calm warm-colored random lines that drift across a dark
+        background -- idle detection on both X11 and Wayland, multi-monitor
+        support, and a live-updating preferences window.
+      </p>
+
+      <p class="oss-note">
+        <strong>A note from the maker:</strong> this app was built on Pop!_OS
+        Linux, largely through "vibe coding" (prompting an AI coding assistant
+        rather than hand-typing every line). It's free and open source
+        (GPL-3.0-or-later) -- use it, read it, modify it, integrate it into
+        your own projects, and redistribute it however you like, no
+        restrictions beyond keeping modified redistributions open source too.
+        Since it runs on your machine, please be a courteous user: try it out
+        with your normal backup/update habits, the same as you would with any
+        new software.
+      </p>
+
+      <details>
+        <summary>How to install it</summary>
+        <p>Download the ZIP below, extract it, then from a terminal inside the extracted folder:</p>
+        <pre><code># System packages (Debian/Ubuntu/Pop!_OS):
+sudo apt install python3-gi gir1.2-gtk-4.0 gir1.2-adw-1 \
+    libglib2.0-dev libcairo2-dev python3-dev
+
+pip install .
+screensaver-app</code></pre>
+        <p>That registers it as a regular app (with a <code>.desktop</code> entry) and installs the <code>screensaver-app</code> command. Turn on "Launch at login" in its preferences window to have it start automatically, like any other screensaver.</p>
+      </details>
+
+      <details>
+        <summary>How to use it</summary>
+        <ul>
+          <li>Open preferences with <code>screensaver-app --preferences</code>, or via the tray icon if your desktop shows one.</li>
+          <li>Pick a mode, set the idle timeout, and turn on session locking -- every change applies live, with a preview in the window.</li>
+          <li>Trigger it immediately with <code>screensaver-app --preview</code> instead of waiting out the idle timeout.</li>
+          <li>Any keyboard or mouse input dismisses it on every monitor at once.</li>
+        </ul>
+      </details>
+
+      <details>
+        <summary>How to modify it locally</summary>
+        <p>Same download, installed in editable mode instead so your edits take effect immediately:</p>
+        <pre><code>cd screensaver-app
+glib-compile-schemas data/
+pip install -e '.[dev]'
+screensaver-app</code></pre>
+        <p>Every screensaver mode is a small self-contained class under <code>screensaver_app/modes/</code> -- copy an existing one to build your own. Full details, the project layout, and the test suite are documented in the bundled <code>README.md</code>.</p>
+      </details>
+
+      <div class="btn-row">
+        <!-- "magnetic" makes this button follow the cursor slightly on hover
+             (see initMagnetic in script.js). "download" tells the browser to
+             save the ZIP instead of navigating to it. -->
+        <a href="store-files/screensaver-app.zip" class="download-btn magnetic" download>Download for Free</a>
+        <a href="store-files/screensaver-app/README.md" class="secondary-btn magnetic">README</a>
+        <a href="store-files/screensaver-app/LICENSE" class="secondary-btn magnetic">License</a>
+      </div>
+    </div>
+
     <div class="offer-card">
       <h2>Free PDF Download</h2>
       <p>Download a free PDF containing 116 content ideas you can use as inspiration. These are raw ideas only, so the file is a collection of concepts ready for your own creative execution.</p>
@@ -174,6 +367,8 @@
            (see initMagnetic in script.js). "download" tells the browser to save
            the PDF instead of navigating to it. -->
       <a href="store-files/content-ideas/video_ideas.pdf" class="download-btn magnetic" download>Download PDF for Free</a>
+    </div>
+
     </div>
 
     <a href="index.html" class="back-btn magnetic">← Back Home</a>

@@ -1,0 +1,28 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="128" height="128" viewBox="0 0 128 128">
+  <defs>
+    <linearGradient id="bg" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0" stop-color="#3d3846"/>
+      <stop offset="1" stop-color="#1a1a22"/>
+    </linearGradient>
+    <linearGradient id="sky" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0" stop-color="#241f45"/>
+      <stop offset="1" stop-color="#0b0b1a"/>
+    </linearGradient>
+  </defs>
+
+  <rect x="4" y="4" width="120" height="120" rx="28" fill="url(#bg)"/>
+
+  <rect x="22" y="30" width="84" height="56" rx="6" fill="url(#sky)" stroke="#5a5560" stroke-width="2"/>
+
+  <circle cx="70" cy="50" r="14" fill="#f5e6b8"/>
+  <circle cx="76" cy="45" r="14" fill="url(#sky)"/>
+
+  <circle cx="40" cy="46" r="1.6" fill="#f5e6b8"/>
+  <circle cx="48" cy="58" r="1.2" fill="#f5e6b8"/>
+  <circle cx="36" cy="60" r="1.4" fill="#f5e6b8"/>
+  <circle cx="88" cy="68" r="1.4" fill="#f5e6b8"/>
+  <circle cx="96" cy="58" r="1.1" fill="#f5e6b8"/>
+
+  <rect x="58" y="86" width="12" height="12" fill="#5a5560"/>
+  <rect x="46" y="98" width="36" height="7" rx="3.5" fill="#5a5560"/>
+</svg>
