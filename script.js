@@ -10,7 +10,7 @@ const REDUCED_MOTION = window.matchMedia('(prefers-reduced-motion: reduce)').mat
    at a dotted key path here (e.g. "hero.bio" -> TRANSLATIONS.en.hero.bio). */
 const TRANSLATIONS = {
   en: {
-    nav: { logoAria: 'Back to top', toolkit: 'Toolkit', support: 'Support', build: 'Build', clockAria: 'Local time' },
+    nav: { logoAria: 'Back to top', homeAria: 'Back home', toolkit: 'Toolkit', support: 'Support', build: 'Build', clockAria: 'Local time', githubAria: 'GitHub profile' },
     lang: { toggle: '🌐 DE' },
     dark: { dark: '🌙 Dark', light: '☀️ Light' },
     hero: {
@@ -58,13 +58,13 @@ const TRANSLATIONS = {
       step2: 'Build',
       step3: 'Ship',
     },
-    footer: { status: 'IT · Web · Media — Germany' },
+    footer: { status: 'IT · Web · Media — Germany', github: 'GitHub', githubAria: 'GitHub profile' },
     meta: {
       description: 'Ali Kenjo — builder of websites, apps, and tools, and cross-platform tech support in Germany.',
     },
   },
   de: {
-    nav: { logoAria: 'Nach oben', toolkit: 'Werkzeuge', support: 'Support', build: 'Erstellen', clockAria: 'Ortszeit' },
+    nav: { logoAria: 'Nach oben', homeAria: 'Zurück zur Startseite', toolkit: 'Werkzeuge', support: 'Support', build: 'Erstellen', clockAria: 'Ortszeit', githubAria: 'GitHub-Profil' },
     lang: { toggle: '🌐 EN' },
     dark: { dark: '🌙 Nacht', light: '☀️ Hell' },
     hero: {
@@ -113,7 +113,7 @@ const TRANSLATIONS = {
       step2: 'Bauen',
       step3: 'Liefern',
     },
-    footer: { status: 'IT · Web · Medien — Deutschland' },
+    footer: { status: 'IT · Web · Medien — Deutschland', github: 'GitHub', githubAria: 'GitHub-Profil' },
     meta: {
       description: 'Ali Kenjo — baut Websites, Apps und Tools und bietet plattformübergreifenden Tech-Support in Deutschland.',
     },
@@ -312,8 +312,13 @@ function initScrollSpy() {
   const links = Array.from(document.querySelectorAll('.nav-link'));
   if (!links.length) return;
   // Each nav link's href (e.g. "#toolkit") points at the section it should highlight.
+  // Cross-page links (e.g. "index.html#toolkit", used on pages without that
+  // section) aren't valid selectors, so skip anything that isn't an in-page anchor.
   const sections = links
-    .map((link) => document.querySelector(link.getAttribute('href')))
+    .map((link) => {
+      const href = link.getAttribute('href');
+      return href.startsWith('#') ? document.querySelector(href) : null;
+    })
     .filter(Boolean);
   if (!sections.length) return;
 

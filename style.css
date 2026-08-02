@@ -275,6 +275,7 @@ nav a:focus-visible,
 .dark-mode-toggle:focus-visible,
 .store-btn-round:focus-visible,
 .nav-logo:focus-visible,
+.nav-icon-btn:focus-visible,
 .tag:focus-visible {
   outline: 2px solid var(--accent);
   outline-offset: 3px;
@@ -298,6 +299,29 @@ nav a:focus-visible,
 .dark-mode-toggle:hover {
   color: var(--text-primary);
   background: var(--border);
+}
+
+/* Icon-only round nav button, e.g. the GitHub profile link. Filled with the
+   same gradient as the "AK" logo so it reads as a colored accent instead of
+   blending in with the muted lang/dark-mode toggles next to it. */
+.nav-icon-btn {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 34px;
+  height: 34px;
+  border-radius: 50%;
+  background: var(--gradient);
+  color: var(--on-accent);
+  text-decoration: none;
+  flex-shrink: 0;
+  box-shadow: 0 6px 16px color-mix(in srgb, var(--accent) 35%, transparent);
+  transition: transform 0.3s var(--ease-bounce), box-shadow 0.3s;
+}
+
+.nav-icon-btn:hover {
+  transform: rotate(-8deg) scale(1.08);
+  box-shadow: 0 10px 24px color-mix(in srgb, var(--accent) 48%, transparent);
 }
 
 /* ── HERO ──
@@ -829,6 +853,17 @@ footer:hover { box-shadow: 0 20px 50px var(--shadow-strong); }
   align-items: center;
   gap: 0.5rem;
 }
+
+.footer-github {
+  display: flex;
+  align-items: center;
+  gap: 0.4rem;
+  color: var(--text-secondary);
+  text-decoration: none;
+  transition: color 0.2s;
+}
+
+.footer-github:hover { color: var(--accent); }
 
 .footer-dot {
   color: var(--accent);
